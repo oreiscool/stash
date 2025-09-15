@@ -1,4 +1,4 @@
-package com.example.stash
+package com.stevie.stash
 
 import io.flutter.embedding.android.FlutterActivity
 

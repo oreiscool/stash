@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "144787903889",
+    "project_id": "stash-1c137",
+    "storage_bucket": "stash-1c137.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144787903889:android:62740d5822523a9eab3630",
+        "android_client_info": {
+          "package_name": "com.example.stash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEqtjay-KI7Cj_XDB7CajxM94-eiR7Ils"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144787903889:android:d3d921489b9d3dcfab3630",
+        "android_client_info": {
+          "package_name": "com.stevie.stash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEqtjay-KI7Cj_XDB7CajxM94-eiR7Ils"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
