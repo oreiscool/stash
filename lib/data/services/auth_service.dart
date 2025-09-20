@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthServiceException implements Exception {
   final String message;
   AuthServiceException(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class AuthService {
