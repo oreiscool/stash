@@ -9,8 +9,14 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stash'),
+        title: const Text('Your Stash'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              // TODO: Implement search functionality
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
@@ -19,8 +25,17 @@ class HomePage extends ConsumerWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('Welcome! Your stash items will appear here.'),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          // TODO: Implement the "Add Stash Item" dialog
+        },
+      ),
+      body: ListView.builder(
+        itemCount: 0,
+        itemBuilder: (context, index) {
+          return const ListTile(title: Text('Placeholder Item'));
+        },
       ),
     );
   }
