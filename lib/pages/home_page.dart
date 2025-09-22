@@ -20,7 +20,30 @@ class HomePage extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ref.read(authRepoProvider).signOut();
+              showDialog(
+                context: context,
+                builder: (BuildContext dialogContext) {
+                  return AlertDialog(
+                    title: const Text('Confirm Logout'),
+                    content: const Text('Are you sure you want to log out?'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Logout'),
+                        onPressed: () {
+                          ref.read(authRepoProvider).signOut();
+                          Navigator.of(dialogContext).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ],
@@ -32,7 +55,7 @@ class HomePage extends ConsumerWidget {
         },
       ),
       body: ListView.builder(
-        itemCount: 0,
+        itemCount: 1,
         itemBuilder: (context, index) {
           return const ListTile(title: Text('Placeholder Item'));
         },
