@@ -48,7 +48,7 @@ final class AuthServiceProvider
   }
 }
 
-String _$authServiceHash() => r'0dfa6cd7b3d2c42d27d44dbdbba6d3799e31f428';
+String _$authServiceHash() => r'ed0872794ec8e4cb3f50cb37b9c0b9467eb51ddb';
 
 @ProviderFor(authRepo)
 const authRepoProvider = AuthRepoProvider._();
@@ -89,4 +89,4 @@ final class AuthRepoProvider
   }
 }
 
-String _$authRepoHash() => r'bdc3e1ef52b7e8d2c1174400b23c0674d4bcea89';
+String _$authRepoHash() => r'936a80bfe41721e4bb9a172c4cf8c352c55c15e4';

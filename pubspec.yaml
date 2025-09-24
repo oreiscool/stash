@@ -13,6 +13,7 @@ dependencies:
   firebase_auth: ^6.0.2
   flutter_riverpod: ^3.0.0
   riverpod_annotation: ^3.0.0
+  cloud_firestore: ^6.0.2
 
 
 dev_dependencies:
