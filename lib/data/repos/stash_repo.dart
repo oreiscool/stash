@@ -31,7 +31,13 @@ class StashRepo {
     return _service.addStashItem(newItem);
   }
 
-  // TODO: Add methods for updating and deleting items.
+  Future<void> updateStashItem(StashItem item) async {
+    return _service.updateStashItem(item);
+  }
+
+  Future<void> deleteStashItem(String itemId) async {
+    return _service.deleteStashItem(itemId);
+  }
 }
 
 @riverpod

@@ -19,5 +19,22 @@ class StashService {
     }
   }
 
-  // TODO: Add methods for fetching, updating, and deleting stash items
+  Future<void> updateStashItem(StashItem item) async {
+    if (item.id == null) {
+      throw StashServiceException('Cannot update an item without an ID.');
+    }
+    try {
+      await _db.collection('stashes').doc(item.id).update(item.toMap());
+    } catch (e) {
+      throw StashServiceException('Failed to update item in stash: $e');
+    }
+  }
+
+  Future<void> deleteStashItem(String itemId) async {
+    try {
+      await _db.collection('stashes').doc(itemId).delete();
+    } catch (e) {
+      throw StashServiceException('Failed to delete item from stash: $e');
+    }
+  }
 }
