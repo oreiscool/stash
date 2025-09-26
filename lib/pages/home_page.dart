@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/auth_repo.dart';
+import 'package:stash/widgets/add_stash_item_dialog.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -51,7 +52,10 @@ class HomePage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // TODO: Implement the "Add Stash Item" dialog
+          showDialog(
+            context: context,
+            builder: (context) => const AddStashItemDialog(),
+          );
         },
       ),
       body: ListView.builder(
