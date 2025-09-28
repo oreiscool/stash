@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/data/repos/stash_repo.dart';
@@ -49,7 +50,10 @@ class StashDetailPage extends ConsumerWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(stashItem.content),
+        child: SelectableText(
+          stashItem.content,
+          style: const TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
