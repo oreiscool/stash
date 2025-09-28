@@ -21,10 +21,25 @@ class HomePage extends ConsumerWidget {
               // TODO: Implement search functionality
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              showDialog(
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.deepPurple),
+              child: Center(
+                child: Text(
+                  'Stash Menu',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () => showDialog(
                 context: context,
                 builder: (BuildContext dialogContext) {
                   return AlertDialog(
@@ -47,10 +62,11 @@ class HomePage extends ConsumerWidget {
                     ],
                   );
                 },
-              );
-            },
-          ),
-        ],
+              ),
+            ),
+            // TODO: Add a ListTile for the Settings page later
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
