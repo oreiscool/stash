@@ -24,7 +24,12 @@ class _AddStashItemDialogState extends ConsumerState<AddStashItemDialog> {
     final isSnippet =
         trimmedContent.contains(';') ||
         trimmedContent.contains('{') ||
-        trimmedContent.contains('}');
+        trimmedContent.contains('}') ||
+        trimmedContent.contains('(') ||
+        trimmedContent.contains(')') ||
+        trimmedContent.contains('=') ||
+        trimmedContent.contains('[') ||
+        trimmedContent.contains(']');
 
     setState(() {
       if (isLink) {
