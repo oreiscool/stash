@@ -17,6 +17,24 @@ class StashItem {
     required this.createdAt,
   });
 
+  StashItem copyWith({
+    String? id,
+    String? userId,
+    String? content,
+    String? type,
+    List<String>? tags,
+    Timestamp? createdAt,
+  }) {
+    return StashItem(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      content: content ?? this.content,
+      type: type ?? this.type,
+      tags: tags ?? this.tags,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
