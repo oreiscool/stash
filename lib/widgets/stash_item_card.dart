@@ -9,20 +9,48 @@ class StashItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(12),
+      ),
+      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.only(bottom: 8),
       child: InkWell(
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => StashDetailPage(stashItem: stashItem),
           ),
         ),
-        child: ListTile(
-          title: Text(
-            stashItem.content,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text('Type: ${stashItem.type}'),
-          // TODO: We will add clickable links and tag chips here later.
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                stashItem.content,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text('Type: ${stashItem.type}'),
+              // TODO: We will add clickable links and tag chips here later.
+            ),
+            if (stashItem.tags.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: stashItem.tags.map((tag) {
+                    return Chip(
+                      label: Text(tag),
+                      labelStyle: const TextStyle(fontSize: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      backgroundColor: Colors.grey.shade200,
+                    );
+                  }).toList(),
+                ),
+              ),
+          ],
         ),
       ),
     );
