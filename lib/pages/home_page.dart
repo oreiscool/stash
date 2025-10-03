@@ -28,12 +28,14 @@ class HomePage extends ConsumerWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.deepPurple),
-              child: Center(
-                child: Text(
-                  'Stash Menu',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            SizedBox(
+              height: 100,
+              child: const DrawerHeader(
+                child: Center(
+                  child: Text(
+                    'Stash',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
