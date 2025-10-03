@@ -4,6 +4,7 @@ import 'package:stash/data/repos/auth_repo.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/widgets/add_stash_item_dialog.dart';
 import 'package:stash/widgets/stash_item_card.dart';
+import 'package:stash/pages/tag_management_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -37,6 +38,16 @@ class HomePage extends ConsumerWidget {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.label_outline),
+              title: const Text('Manage Tags'),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TagManagementPage(),
+                ),
+              ),
+            ),
+            // TODO: Add a ListTile for the Settings page later
+            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () => showDialog(
@@ -64,7 +75,6 @@ class HomePage extends ConsumerWidget {
                 },
               ),
             ),
-            // TODO: Add a ListTile for the Settings page later
           ],
         ),
       ),
