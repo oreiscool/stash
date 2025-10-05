@@ -29,7 +29,6 @@ class StashItemCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               subtitle: Text('Type: ${stashItem.type}'),
-              // TODO: We will add clickable links and tag chips here later.
             ),
             if (stashItem.tags.isNotEmpty)
               Padding(
