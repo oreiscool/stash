@@ -28,7 +28,32 @@ class TagManagementPage extends ConsumerWidget {
                 trailing: IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () {
-                    // TODO: Implement delete functionality
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext dialogContext) {
+                        return AlertDialog(
+                          title: const Text('Confirm Deletion'),
+                          content: Text(
+                            'Are you sure you want to delete the tag "${tag.name}"?',
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                ref.read(tagRepoProvider).deleteTag(tag.id);
+                                Navigator.of(dialogContext).pop();
+                              },
+                              child: const Text('Delete'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               );

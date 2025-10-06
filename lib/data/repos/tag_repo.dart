@@ -42,7 +42,21 @@ class TagRepo {
         .add(newTag);
   }
 
-  // TODO: Add methods for updateTag, deleteTag later
+  Future<void> deleteTag(String tagId) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) {
+      throw Exception('User not authenticated.');
+    }
+
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('tags')
+        .doc(tagId)
+        .delete();
+  }
+
+  // TODO: Add method for updateTag later
 }
 
 @riverpod
