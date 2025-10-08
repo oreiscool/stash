@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
+import 'package:stash/data/models/tag.dart';
 
 class AddTagDialog extends ConsumerStatefulWidget {
-  const AddTagDialog({super.key});
+  const AddTagDialog({super.key, this.tagToEdit});
+  final Tag? tagToEdit;
 
   @override
   ConsumerState<AddTagDialog> createState() => _AddTagDialogState();
@@ -19,9 +21,18 @@ class _AddTagDialogState extends ConsumerState<AddTagDialog> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.tagToEdit != null) {
+      _contentController.text = widget.tagToEdit!.name;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isEditing = widget.tagToEdit != null;
     return AlertDialog(
-      title: const Text('Add a New Tag'),
+      title: Text(isEditing ? 'Edit Tag' : 'Add a New Tag'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,11 +61,17 @@ class _AddTagDialogState extends ConsumerState<AddTagDialog> {
           onPressed: () {
             final tagName = _contentController.text.trim();
             if (tagName.isNotEmpty) {
-              ref.read(tagRepoProvider).addTag(tagName);
+              if (isEditing) {
+                ref
+                    .read(tagRepoProvider)
+                    .updateTag(widget.tagToEdit!.id, tagName);
+              } else {
+                ref.read(tagRepoProvider).addTag(tagName);
+              }
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Add Tag'),
+          child: Text(isEditing ? 'Save' : 'Add Tag'),
         ),
       ],
     );

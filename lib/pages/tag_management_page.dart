@@ -25,6 +25,10 @@ class TagManagementPage extends ConsumerWidget {
               final tag = tags[index];
               return ListTile(
                 title: Text(tag.name),
+                onTap: () => showDialog(
+                  context: context,
+                  builder: (context) => AddTagDialog(tagToEdit: tag),
+                ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () {

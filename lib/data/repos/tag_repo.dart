@@ -56,7 +56,19 @@ class TagRepo {
         .delete();
   }
 
-  // TODO: Add method for updateTag later
+  Future<void> updateTag(String tagId, String newName) async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) {
+      throw Exception('User not authenticated.');
+    }
+
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('tags')
+        .doc(tagId)
+        .update({'name': newName.trim()});
+  }
 }
 
 @riverpod
