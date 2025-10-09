@@ -4,6 +4,7 @@ import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:stash/widgets/assign_tags_dialog.dart';
 
 class StashDetailPage extends ConsumerStatefulWidget {
   final StashItem stashItem;
@@ -119,35 +120,101 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: _isEditing
-            ? TextField(
-                controller: _contentController,
-                autofocus: true,
-                maxLines: null,
-                expands: true,
-                decoration: const InputDecoration(border: InputBorder.none),
-                style: const TextStyle(fontSize: 16),
-              )
-            : Linkify(
-                onOpen: (link) async {
-                  final messenger = ScaffoldMessenger.of(context);
-                  final uri = Uri.parse(link.url);
-                  if (!await launchUrl(uri)) {
-                    if (!mounted) return;
-                    messenger.showSnackBar(
-                      SnackBar(content: Text('Could not open ${link.url}')),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _isEditing
+                  ? TextField(
+                      controller: _contentController,
+                      autofocus: true,
+                      maxLines: null,
+                      expands: true,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      style: const TextStyle(fontSize: 16),
+                    )
+                  : Linkify(
+                      onOpen: (link) async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final uri = Uri.parse(link.url);
+                        if (!await launchUrl(uri)) {
+                          if (!mounted) return;
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text('Could not open ${link.url}'),
+                            ),
+                          );
+                        }
+                      },
+                      text: _currentItem.content,
+                      style: const TextStyle(fontSize: 16),
+                      options: LinkifyOptions(looseUrl: true),
+                      linkStyle: const TextStyle(
+                        fontSize: 16,
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue,
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 32),
+            InkWell(
+              onTap: () async {
+                final List<String>? updatedTags =
+                    await showDialog<List<String>>(
+                      context: context,
+                      builder: (context) => AssignTagsDialog(
+                        initialSelectedTags: _currentItem.tags,
+                      ),
                     );
-                  }
-                },
-                text: _currentItem.content,
-                style: const TextStyle(fontSize: 16),
-                options: LinkifyOptions(looseUrl: true),
-                linkStyle: const TextStyle(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                  color: Colors.blue,
+                if (updatedTags != null) {
+                  final updatedItem = _currentItem.copyWith(tags: updatedTags);
+                  ref.read(stashRepoProvider).updateStashItem(updatedItem);
+                  setState(() {
+                    _currentItem = updatedItem;
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.label_outline,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _currentItem.tags.isEmpty
+                          ? const Text(
+                              'Add tags',
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          : Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children: _currentItem.tags
+                                  .map(
+                                    (tag) => Chip(
+                                      label: Text(tag),
+                                      labelStyle: const TextStyle(fontSize: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                    ),
+                  ],
                 ),
               ),
+            ),
+          ],
+        ),
       ),
     );
   }
