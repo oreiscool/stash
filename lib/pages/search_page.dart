@@ -28,7 +28,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final searchResults = ref.watch(stashSearchProvider(_query));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Hero(
           tag: 'search-bar',
