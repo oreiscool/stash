@@ -35,6 +35,20 @@ class StashItem {
     );
   }
 
+  factory StashItem.fromFirestore(
+    Map<String, dynamic> data,
+    String documentId,
+  ) {
+    return StashItem(
+      id: documentId,
+      userId: data['userId'] ?? '',
+      content: data['content'] ?? '',
+      type: data['type'] ?? 'Note',
+      tags: List<String>.from(data['tags'] ?? []),
+      createdAt: data['createdAt'] ?? Timestamp.now(),
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,

@@ -129,3 +129,78 @@ final class StashRepoProvider
 }
 
 String _$stashRepoHash() => r'c0c913f12dade8170031cdf7ec83d436b7186d3d';
+
+@ProviderFor(stashSearch)
+const stashSearchProvider = StashSearchFamily._();
+
+final class StashSearchProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<StashItem>>,
+          List<StashItem>,
+          Stream<List<StashItem>>
+        >
+    with $FutureModifier<List<StashItem>>, $StreamProvider<List<StashItem>> {
+  const StashSearchProvider._({
+    required StashSearchFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'stashSearchProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$stashSearchHash();
+
+  @override
+  String toString() {
+    return r'stashSearchProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<StashItem>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<StashItem>> create(Ref ref) {
+    final argument = this.argument as String;
+    return stashSearch(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is StashSearchProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$stashSearchHash() => r'b9e530ad0a8b4fdfd14ec935a6ace1e4a5eb4b08';
+
+final class StashSearchFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<StashItem>>, String> {
+  const StashSearchFamily._()
+    : super(
+        retry: null,
+        name: r'stashSearchProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  StashSearchProvider call(String query) =>
+      StashSearchProvider._(argument: query, from: this);
+
+  @override
+  String toString() => r'stashSearchProvider';
+}

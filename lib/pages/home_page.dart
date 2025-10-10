@@ -5,6 +5,7 @@ import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/widgets/add_stash_item_dialog.dart';
 import 'package:stash/widgets/stash_item_card.dart';
 import 'package:stash/pages/tag_management_page.dart';
+import 'package:stash/pages/search_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -14,14 +15,59 @@ class HomePage extends ConsumerWidget {
     final stashStream = ref.watch(stashStreamProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Stash'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search functionality
-            },
+        title: Hero(
+          tag: 'search-bar',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(32),
+              onTap: () {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const SearchPage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Search your stash...',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
+        ),
+        actions: [
+          // TODO: Add the Settings icon here later
         ],
       ),
       drawer: Drawer(
@@ -48,7 +94,6 @@ class HomePage extends ConsumerWidget {
                 ),
               ),
             ),
-            // TODO: Add a ListTile for the Settings page later
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),

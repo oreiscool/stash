@@ -132,29 +132,32 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                       expands: true,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
                       ),
                       style: const TextStyle(fontSize: 16),
                     )
-                  : Linkify(
-                      onOpen: (link) async {
-                        final messenger = ScaffoldMessenger.of(context);
-                        final uri = Uri.parse(link.url);
-                        if (!await launchUrl(uri)) {
-                          if (!mounted) return;
-                          messenger.showSnackBar(
-                            SnackBar(
-                              content: Text('Could not open ${link.url}'),
-                            ),
-                          );
-                        }
-                      },
-                      text: _currentItem.content,
-                      style: const TextStyle(fontSize: 16),
-                      options: LinkifyOptions(looseUrl: true),
-                      linkStyle: const TextStyle(
-                        fontSize: 16,
-                        decoration: TextDecoration.underline,
-                        color: Colors.blue,
+                  : SingleChildScrollView(
+                      child: Linkify(
+                        onOpen: (link) async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          final uri = Uri.parse(link.url);
+                          if (!await launchUrl(uri)) {
+                            if (!mounted) return;
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text('Could not open ${link.url}'),
+                              ),
+                            );
+                          }
+                        },
+                        text: _currentItem.content,
+                        style: const TextStyle(fontSize: 16),
+                        options: LinkifyOptions(looseUrl: true),
+                        linkStyle: const TextStyle(
+                          fontSize: 16,
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
             ),

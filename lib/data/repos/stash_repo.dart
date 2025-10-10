@@ -73,3 +73,22 @@ StashService stashService(Ref ref) => StashService();
 
 @riverpod
 StashRepo stashRepo(Ref ref) => StashRepo(ref.watch(stashServiceProvider));
+
+@riverpod
+Stream<List<StashItem>> stashSearch(Ref ref, String query) {
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null || query.isEmpty) {
+    return Stream.value([]);
+  }
+  return FirebaseFirestore.instance
+      .collection('stashes')
+      .where('userId', isEqualTo: userId)
+      .where('content', isGreaterThanOrEqualTo: query)
+      .where('content', isLessThanOrEqualTo: '$query\uf8ff')
+      .snapshots()
+      .map(
+        (snapshot) => snapshot.docs
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
+            .toList(),
+      );
+}
