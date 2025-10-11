@@ -21,6 +21,7 @@ class StashItemCard extends StatelessWidget {
           ),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               title: Text(
