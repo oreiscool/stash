@@ -11,7 +11,6 @@ class TagManagementPage extends ConsumerWidget {
     final tagStream = ref.watch(tagStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Tags'), centerTitle: true),
       body: tagStream.when(
         data: (tags) {
           if (tags.isEmpty) {
@@ -29,6 +28,7 @@ class TagManagementPage extends ConsumerWidget {
                   context: context,
                   builder: (context) => AddTagDialog(tagToEdit: tag),
                 ),
+                leading: Icon(Icons.label_outlined),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () {
@@ -66,15 +66,6 @@ class TagManagementPage extends ConsumerWidget {
         },
         error: (err, stackTrace) => Center(child: Text('Error: $err')),
         loading: () => const Center(child: CircularProgressIndicator()),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => const AddTagDialog(),
-          );
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }
