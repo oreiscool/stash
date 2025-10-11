@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stash/pages/home_page.dart';
 import 'package:stash/pages/login_page.dart';
+import 'package:stash/pages/app_root.dart';
 
 class AuthGatekeeper extends StatelessWidget {
   const AuthGatekeeper({super.key});
@@ -14,7 +14,7 @@ class AuthGatekeeper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          return const HomePage();
+          return const AppRoot();
         } else {
           return const LoginPage();
         }
