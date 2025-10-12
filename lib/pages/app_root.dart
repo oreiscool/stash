@@ -102,6 +102,7 @@ class AppRoot extends ConsumerWidget {
             : const HomePage(),
         floatingActionButton: currentPage == 'home'
             ? FloatingActionButton(
+                heroTag: 'fab-home',
                 child: const Icon(Icons.add),
                 onPressed: () {
                   showDialog(
@@ -112,13 +113,14 @@ class AppRoot extends ConsumerWidget {
               )
             : currentPage == 'tags'
             ? FloatingActionButton(
+                heroTag: 'fab-tags',
+                child: const Icon(Icons.add),
                 onPressed: () {
                   showDialog(
                     context: context,
                     builder: (context) => const AddTagDialog(),
                   );
                 },
-                child: const Icon(Icons.add),
               )
             : null,
       ),
