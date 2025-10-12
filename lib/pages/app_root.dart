@@ -6,6 +6,7 @@ import 'package:stash/pages/search_page.dart';
 import 'package:stash/providers/ui_providers.dart';
 import 'package:stash/widgets/add_stash_item_dialog.dart';
 import 'package:stash/widgets/app_drawer.dart';
+import 'package:stash/widgets/add_tag_dialog.dart';
 
 class AppRoot extends ConsumerWidget {
   const AppRoot({super.key});
@@ -108,6 +109,16 @@ class AppRoot extends ConsumerWidget {
                     builder: (context) => const AddStashItemDialog(),
                   );
                 },
+              )
+            : currentPage == 'tags'
+            ? FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const AddTagDialog(),
+                  );
+                },
+                child: const Icon(Icons.add),
               )
             : null,
       ),
