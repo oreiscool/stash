@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/widgets/add_tag_dialog.dart';
+import 'package:stash/utils/show_snackbar.dart';
 
 class TagManagementPage extends ConsumerWidget {
   const TagManagementPage({super.key});
@@ -45,6 +46,10 @@ class TagManagementPage extends ConsumerWidget {
                               onPressed: () {
                                 ref.read(tagRepoProvider).deleteTag(tag.id);
                                 Navigator.of(dialogContext).pop();
+                                showSnackBar(
+                                  context,
+                                  'Tag "${tag.name}" deleted',
+                                );
                               },
                               child: const Text('Delete'),
                             ),

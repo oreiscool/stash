@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/stash_repo.dart';
+import 'package:stash/utils/show_snackbar.dart';
 
 class AddStashItemDialog extends ConsumerStatefulWidget {
   const AddStashItemDialog({super.key});
@@ -87,6 +88,7 @@ class _AddStashItemDialogState extends ConsumerState<AddStashItemDialog> {
                 .read(stashRepoProvider)
                 .addStashItem(content: content, type: _detectedType);
             Navigator.of(context).pop();
+            showSnackBar(context, 'Item stashed!');
           },
           child: const Text('Stash It'),
         ),

@@ -5,6 +5,7 @@ import 'package:stash/data/repos/stash_repo.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:stash/widgets/assign_tags_dialog.dart';
+import 'package:stash/utils/show_snackbar.dart';
 
 class StashDetailPage extends ConsumerStatefulWidget {
   final StashItem stashItem;
@@ -76,6 +77,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                 setState(() {
                   _currentItem = updatedItem;
                 });
+                showSnackBar(context, 'Item updated.');
               }
               setState(() {
                 _isEditing = !_isEditing;
@@ -103,6 +105,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                             .deleteStashItem(widget.stashItem.id!);
                         Navigator.of(dialogContext).pop();
                         Navigator.of(context).pop();
+                        showSnackBar(context, 'Item deleted.');
                       },
                     ),
                     TextButton(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/data/models/tag.dart';
+import 'package:stash/utils/show_snackbar.dart';
 
 class AddTagDialog extends ConsumerStatefulWidget {
   const AddTagDialog({super.key, this.tagToEdit});
@@ -65,10 +66,13 @@ class _AddTagDialogState extends ConsumerState<AddTagDialog> {
                 ref
                     .read(tagRepoProvider)
                     .updateTag(widget.tagToEdit!.id, tagName);
+                Navigator.of(context).pop();
+                showSnackBar(context, 'Tag updated to "$tagName".');
               } else {
                 ref.read(tagRepoProvider).addTag(tagName);
+                Navigator.of(context).pop();
+                showSnackBar(context, 'Tag "$tagName" added.');
               }
-              Navigator.of(context).pop();
             }
           },
           child: Text(isEditing ? 'Save' : 'Add Tag'),
