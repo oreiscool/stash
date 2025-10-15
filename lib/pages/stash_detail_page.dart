@@ -20,6 +20,12 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
   late StashItem _currentItem;
   bool _isEditing = false;
 
+  // Define consistent text style for both modes
+  static const TextStyle _contentTextStyle = TextStyle(
+    fontSize: 16,
+    height: 1.5, // Line height multiplier - makes text spacing consistent
+  );
+
   @override
   void initState() {
     super.initState();
@@ -137,7 +143,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.zero,
                       ),
-                      style: const TextStyle(fontSize: 16),
+                      style: _contentTextStyle, // Use consistent style
                     )
                   : SingleChildScrollView(
                       child: Linkify(
@@ -154,10 +160,9 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                           }
                         },
                         text: _currentItem.content,
-                        style: const TextStyle(fontSize: 16),
-                        options: LinkifyOptions(looseUrl: true),
-                        linkStyle: const TextStyle(
-                          fontSize: 16,
+                        style: _contentTextStyle, // Use consistent style
+                        options: const LinkifyOptions(looseUrl: true),
+                        linkStyle: _contentTextStyle.copyWith(
                           decoration: TextDecoration.underline,
                           color: Colors.blue,
                         ),
