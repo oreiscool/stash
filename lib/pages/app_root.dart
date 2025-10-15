@@ -7,6 +7,8 @@ import 'package:stash/providers/ui_providers.dart';
 import 'package:stash/widgets/add_stash_item_dialog.dart';
 import 'package:stash/widgets/app_drawer.dart';
 import 'package:stash/widgets/add_tag_dialog.dart';
+import 'package:stash/data/repos/stash_repo.dart';
+import 'package:stash/data/repos/tag_repo.dart';
 
 class AppRoot extends ConsumerWidget {
   const AppRoot({super.key});
@@ -96,9 +98,21 @@ class AppRoot extends ConsumerWidget {
         ),
         drawer: const AppDrawer(),
         body: currentPage == 'home'
-            ? const HomePage()
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(stashStreamProvider);
+                  return await ref.read(stashStreamProvider.future);
+                },
+                child: const HomePage(),
+              )
             : currentPage == 'tags'
-            ? const TagManagementPage()
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(tagStreamProvider);
+                  return await ref.read(tagStreamProvider.future);
+                },
+                child: const TagManagementPage(),
+              )
             : const HomePage(),
         floatingActionButton: currentPage == 'home'
             ? FloatingActionButton(
