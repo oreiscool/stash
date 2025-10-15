@@ -48,8 +48,9 @@ Stream<List<StashItem>> stashStream(Ref ref) {
   }
 
   return FirebaseFirestore.instance
-      .collection('stashes')
-      .where('userId', isEqualTo: userId)
+      .collection('users')
+      .doc(userId)
+      .collection('stash_items')
       .orderBy('createdAt', descending: true)
       .snapshots()
       .map(
@@ -81,8 +82,9 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
     return Stream.value([]);
   }
   return FirebaseFirestore.instance
-      .collection('stashes')
-      .where('userId', isEqualTo: userId)
+      .collection('users')
+      .doc(userId)
+      .collection('stash_items')
       .where('content', isGreaterThanOrEqualTo: query)
       .where('content', isLessThanOrEqualTo: '$query\uf8ff')
       .snapshots()
