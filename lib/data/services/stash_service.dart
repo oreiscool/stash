@@ -18,7 +18,7 @@ class StashService {
       await _db
           .collection('users')
           .doc(_auth.currentUser?.uid)
-          .collection('stashes')
+          .collection('stash_items')
           .add(item.toMap());
     } catch (e) {
       throw StashServiceException('Failed to add item to stash: $e');
@@ -33,7 +33,7 @@ class StashService {
       await _db
           .collection('users')
           .doc(_auth.currentUser?.uid)
-          .collection('stashes')
+          .collection('stash_items')
           .doc(item.id)
           .update(item.toMap());
     } catch (e) {
@@ -46,7 +46,7 @@ class StashService {
       await _db
           .collection('users')
           .doc(_auth.currentUser?.uid)
-          .collection('stashes')
+          .collection('stash_items')
           .doc(itemId)
           .delete();
     } catch (e) {
