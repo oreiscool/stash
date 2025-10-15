@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthServiceException implements Exception {
   final String message;
@@ -10,6 +11,7 @@ class AuthServiceException implements Exception {
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<User?> createUserWithEmailAndPassword({
     required String email,
@@ -18,7 +20,17 @@ class AuthService {
     try {
       final UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      return userCredential.user;
+
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'email': user.email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      return user;
     } on FirebaseAuthException catch (e) {
       throw AuthServiceException(e.message ?? 'An error occurred.');
     } catch (e) {
