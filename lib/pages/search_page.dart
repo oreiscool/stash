@@ -61,6 +61,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             return const Center(child: Text('No results found.'));
           }
           return ListView.builder(
+            padding: const EdgeInsets.all(12),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
