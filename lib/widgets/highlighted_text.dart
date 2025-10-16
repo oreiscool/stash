@@ -51,9 +51,9 @@ class HighlightedText extends StatelessWidget {
           style:
               highlightStyle ??
               TextStyle(
-                backgroundColor: Colors.yellow.shade200,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
         ),
       );
