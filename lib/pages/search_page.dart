@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:stash/widgets/stash_item_card.dart';
+import 'package:stash/widgets/search_result_card.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -64,7 +64,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              return StashItemCard(stashItem: item);
+              return SearchResultCard(stashItem: item, query: _query);
             },
           );
         },
