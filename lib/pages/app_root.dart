@@ -9,6 +9,7 @@ import 'package:stash/widgets/app_drawer.dart';
 import 'package:stash/widgets/add_tag_dialog.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/data/repos/tag_repo.dart';
+import 'package:stash/widgets/settings_bottom_sheet.dart';
 
 class AppRoot extends ConsumerWidget {
   const AppRoot({super.key});
@@ -93,7 +94,19 @@ class AppRoot extends ConsumerWidget {
               : const Text('Manage Tags'),
           centerTitle: currentPage == 'tags',
           actions: currentPage == 'home'
-              ? [IconButton(onPressed: () {}, icon: const Icon(Icons.settings))]
+              ? [
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const SettingsBottomSheet(),
+                      );
+                    },
+                    icon: const Icon(Icons.settings),
+                  ),
+                ]
               : [],
         ),
         drawer: const AppDrawer(),

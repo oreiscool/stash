@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/data/services/stash_service.dart';
+import 'package:stash/providers/ui_providers.dart';
 
 part 'stash_repo.g.dart';
 
@@ -47,26 +48,36 @@ Stream<List<StashItem>> stashStream(Ref ref) {
     return Stream.value([]);
   }
 
+  final selectedTags = ref.watch(selectedTagsProvider);
+
   return FirebaseFirestore.instance
       .collection('users')
       .doc(userId)
       .collection('stash_items')
       .orderBy('createdAt', descending: true)
       .snapshots()
-      .map(
-        (snapshot) => snapshot.docs
+      .map((snapshot) {
+        var items = snapshot.docs
             .map(
               (doc) => StashItem(
                 id: doc.id,
-                userId: doc['userId'],
+                userId: userId,
                 content: doc['content'],
                 type: doc['type'],
-                tags: List<String>.from(doc['tags']),
+                tags: List<String>.from(doc['tags'] ?? []),
                 createdAt: doc['createdAt'],
               ),
             )
-            .toList(),
-      );
+            .toList();
+        if (selectedTags.isNotEmpty) {
+          items = items
+              .where(
+                (item) => item.tags.any((tag) => selectedTags.contains(tag)),
+              )
+              .toList();
+        }
+        return items;
+      });
 }
 
 @riverpod

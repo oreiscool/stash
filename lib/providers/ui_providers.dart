@@ -13,3 +13,23 @@ class CurrentPage extends _$CurrentPage {
     state = page;
   }
 }
+
+@riverpod
+class SelectedTags extends _$SelectedTags {
+  @override
+  Set<String> build() {
+    return {};
+  }
+
+  void toggleTag(String tagName) {
+    if (state.contains(tagName)) {
+      state = {...state}..remove(tagName);
+    } else {
+      state = {...state, tagName};
+    }
+  }
+
+  void clearTags() {
+    state = {};
+  }
+}
