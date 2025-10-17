@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/data/repos/stash_repo.dart';
@@ -70,6 +71,18 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
       appBar: AppBar(
         title: Text(_currentItem.type),
         actions: [
+          IconButton(
+            onPressed: () async {
+              HapticFeedback.lightImpact();
+              await Clipboard.setData(
+                ClipboardData(text: _currentItem.content),
+              );
+              if (!context.mounted) return;
+              showSnackBar(context, '${_currentItem.type} copied!');
+            },
+            icon: const Icon(Icons.copy_outlined),
+            tooltip: 'Copy to clipboard',
+          ),
           IconButton(
             onPressed: () {
               if (_isEditing) {
