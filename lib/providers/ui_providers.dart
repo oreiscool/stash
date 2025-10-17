@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'ui_providers.g.dart';
@@ -32,4 +33,12 @@ class SelectedTags extends _$SelectedTags {
   void clearTags() {
     state = {};
   }
+}
+
+@riverpod
+Stream<DateTime> clockStream(Ref ref) {
+  return Stream.periodic(
+    const Duration(minutes: 1),
+    (_) => DateTime.now(),
+  ).asBroadcastStream();
 }

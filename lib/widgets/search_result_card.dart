@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/widgets/highlighted_text.dart';
 import 'package:stash/pages/stash_detail_page.dart';
 import 'package:stash/utils/date_formatter.dart';
+import 'package:stash/providers/ui_providers.dart';
 
-class SearchResultCard extends StatelessWidget {
+class SearchResultCard extends ConsumerWidget {
   const SearchResultCard({
     super.key,
     required this.stashItem,
@@ -15,7 +17,8 @@ class SearchResultCard extends StatelessWidget {
   final String query;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(clockStreamProvider);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,

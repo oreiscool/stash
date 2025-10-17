@@ -113,3 +113,37 @@ abstract class _$SelectedTags extends $Notifier<Set<String>> {
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(clockStream)
+const clockStreamProvider = ClockStreamProvider._();
+
+final class ClockStreamProvider
+    extends
+        $FunctionalProvider<AsyncValue<DateTime>, DateTime, Stream<DateTime>>
+    with $FutureModifier<DateTime>, $StreamProvider<DateTime> {
+  const ClockStreamProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'clockStreamProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$clockStreamHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<DateTime> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<DateTime> create(Ref ref) {
+    return clockStream(ref);
+  }
+}
+
+String _$clockStreamHash() => r'9029919d298904fb10405d3b5239c4c18ee69235';

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/pages/stash_detail_page.dart';
 import 'package:stash/utils/date_formatter.dart';
+import 'package:stash/providers/ui_providers.dart';
 
-class StashItemCard extends StatelessWidget {
+class StashItemCard extends ConsumerWidget {
   const StashItemCard({super.key, required this.stashItem});
   final StashItem stashItem;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(clockStreamProvider);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadiusGeometry.circular(12),
