@@ -1,30 +1,46 @@
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+// Add this to the top of date_formatter.dart if you want custom messages
+
+class ShortMessages implements timeago.LookupMessages {
+  @override
+  String prefixAgo() => '';
+  @override
+  String prefixFromNow() => '';
+  @override
+  String suffixAgo() => '';
+  @override
+  String suffixFromNow() => '';
+  @override
+  String lessThanOneMinute(int seconds) => 'Just now';
+  @override
+  String aboutAMinute(int minutes) => '1m ago';
+  @override
+  String minutes(int minutes) => '${minutes}m ago';
+  @override
+  String aboutAnHour(int minutes) => '1h ago';
+  @override
+  String hours(int hours) => '${hours}h ago';
+  @override
+  String aDay(int hours) => '1d ago';
+  @override
+  String days(int days) => '${days}d ago';
+  @override
+  String aboutAMonth(int days) => '1mo ago';
+  @override
+  String months(int months) => '${months}mo ago';
+  @override
+  String aboutAYear(int year) => '1y ago';
+  @override
+  String years(int years) => '${years}y ago';
+  @override
+  String wordSeparator() => ' ';
+}
 
 String formatRelativeTime(DateTime dateTime) {
-  final now = DateTime.now();
-  final difference = now.difference(dateTime);
-
-  if (difference.inSeconds < 60) {
-    return 'Just now';
-  } else if (difference.inMinutes < 60) {
-    final minutes = difference.inMinutes;
-    return '${minutes}m ago';
-  } else if (difference.inHours < 24) {
-    final hours = difference.inHours;
-    return '${hours}h ago';
-  } else if (difference.inDays < 7) {
-    final days = difference.inDays;
-    return '${days}d ago';
-  } else if (difference.inDays < 30) {
-    final weeks = (difference.inDays / 7).floor();
-    return '${weeks}w ago';
-  } else if (difference.inDays < 365) {
-    final months = (difference.inDays / 30).floor();
-    return '${months}mo ago';
-  } else {
-    final years = (difference.inDays / 365).floor();
-    return '${years}y ago';
-  }
+  timeago.setLocaleMessages('en_short', ShortMessages());
+  return timeago.format(dateTime, locale: 'en_short');
 }
 
 // Using intl for absolute dates
