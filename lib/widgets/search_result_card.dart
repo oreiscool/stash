@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/widgets/highlighted_text.dart';
 import 'package:stash/pages/stash_detail_page.dart';
+import 'package:stash/utils/date_formatter.dart';
 
 class SearchResultCard extends StatelessWidget {
   const SearchResultCard({
@@ -35,13 +36,24 @@ class SearchResultCard extends StatelessWidget {
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: HighlightedText(
-                text: 'Type: ${stashItem.type}',
-                query: query,
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.bodySmall?.color,
-                  fontSize: 14,
-                ),
+              subtitle: Row(
+                children: [
+                  HighlightedText(
+                    text: 'Type: ${stashItem.type}',
+                    query: query,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text('•', style: TextStyle(color: Colors.grey[400])),
+                  const SizedBox(width: 8),
+                  Text(
+                    formatRelativeTime(stashItem.createdAt.toDate()),
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
               ),
             ),
             if (stashItem.tags.isNotEmpty)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/pages/stash_detail_page.dart';
+import 'package:stash/utils/date_formatter.dart';
 
 class StashItemCard extends StatelessWidget {
   const StashItemCard({super.key, required this.stashItem});
@@ -29,7 +30,18 @@ class StashItemCard extends StatelessWidget {
                 maxLines: 5,
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: Text('Type: ${stashItem.type}'),
+              subtitle: Row(
+                children: [
+                  Text('Type: ${stashItem.type}'),
+                  const SizedBox(width: 8),
+                  Text('•', style: TextStyle(color: Colors.grey[400])),
+                  const SizedBox(width: 8),
+                  Text(
+                    formatRelativeTime(stashItem.createdAt.toDate()),
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             ),
             if (stashItem.tags.isNotEmpty)
               Padding(
