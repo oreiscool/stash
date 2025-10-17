@@ -29,7 +29,9 @@ class AppDrawer extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.home_outlined),
+              leading: Icon(
+                currentPage == 'home' ? Icons.home : Icons.home_outlined,
+              ),
               title: const Text('Home'),
               selected: currentPage == 'home',
               selectedTileColor: Theme.of(
@@ -45,7 +47,9 @@ class AppDrawer extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.label_outline),
+              leading: Icon(
+                currentPage == 'tags' ? Icons.label : Icons.label_outline,
+              ),
               title: const Text('Manage Tags'),
               selected: currentPage == 'tags',
               selectedTileColor: Theme.of(
