@@ -27,6 +27,7 @@ class StashRepo {
       type: type,
       tags: tags,
       createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
     );
 
     return _service.addStashItem(newItem);
@@ -54,7 +55,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
       .collection('users')
       .doc(userId)
       .collection('stash_items')
-      .orderBy('createdAt', descending: true)
+      .orderBy('updatedAt', descending: true)
       .snapshots()
       .map((snapshot) {
         var items = snapshot.docs
@@ -66,6 +67,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
                 type: doc['type'],
                 tags: List<String>.from(doc['tags'] ?? []),
                 createdAt: doc['createdAt'],
+                updatedAt: doc['updatedAt'],
               ),
             )
             .toList();

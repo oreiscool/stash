@@ -50,7 +50,10 @@ class SearchResultCard extends StatelessWidget {
                   Text('•', style: TextStyle(color: Colors.grey[400])),
                   const SizedBox(width: 8),
                   Text(
-                    formatRelativeTime(stashItem.createdAt.toDate()),
+                    formatItemTimestamp(
+                      stashItem.createdAt.toDate(),
+                      stashItem.updatedAt?.toDate(),
+                    ),
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ],

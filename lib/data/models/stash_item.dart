@@ -7,6 +7,7 @@ class StashItem {
   final String type;
   final List<String> tags;
   final Timestamp createdAt;
+  final Timestamp? updatedAt;
 
   StashItem({
     this.id,
@@ -15,6 +16,7 @@ class StashItem {
     required this.type,
     required this.tags,
     required this.createdAt,
+    this.updatedAt,
   });
 
   StashItem copyWith({
@@ -24,6 +26,7 @@ class StashItem {
     String? type,
     List<String>? tags,
     Timestamp? createdAt,
+    Timestamp? updatedAt,
   }) {
     return StashItem(
       id: id ?? this.id,
@@ -32,6 +35,7 @@ class StashItem {
       type: type ?? this.type,
       tags: tags ?? this.tags,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -46,6 +50,7 @@ class StashItem {
       type: data['type'] ?? 'Note',
       tags: List<String>.from(data['tags'] ?? []),
       createdAt: data['createdAt'] ?? Timestamp.now(),
+      updatedAt: data['updatedAt'],
     );
   }
 
@@ -56,6 +61,7 @@ class StashItem {
       'type': type,
       'tags': tags,
       'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 }

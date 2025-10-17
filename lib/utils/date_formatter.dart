@@ -63,3 +63,12 @@ String formatDate(DateTime dateTime, DateFormatStyle style) {
       return DateFormat('MMM d, h:mm a').format(dateTime);
   }
 }
+
+String formatItemTimestamp(DateTime createdAt, DateTime? updatedAt) {
+  if (updatedAt != null &&
+      updatedAt.difference(createdAt).inSeconds.abs() > 1) {
+    return 'Updated ${formatRelativeTime(updatedAt)}';
+  } else {
+    return formatRelativeTime(createdAt);
+  }
+}

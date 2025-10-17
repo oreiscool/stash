@@ -30,12 +30,15 @@ class StashService {
       throw StashServiceException('Cannot update an item without an ID.');
     }
     try {
+      final updateData = item.toMap();
+      updateData['updatedAt'] = FieldValue.serverTimestamp();
+
       await _db
           .collection('users')
           .doc(_auth.currentUser?.uid)
           .collection('stash_items')
           .doc(item.id)
-          .update(item.toMap());
+          .update(updateData);
     } catch (e) {
       throw StashServiceException('Failed to update item in stash: $e');
     }
