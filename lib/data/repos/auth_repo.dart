@@ -1,31 +1,62 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stash/data/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'auth_repo.g.dart';
 
-class AuthRepo {
-  AuthRepo(this._authService);
-  final AuthService _authService;
+// Keep alive so auth doesn't get disposed
+@Riverpod(keepAlive: true)
+class AuthRepo extends _$AuthRepo {
+  late final AuthService _authService;
 
-  Future<void> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) => _authService.createUserWithEmailAndPassword(
-    email: email,
-    password: password,
-  );
+  @override
+  Stream<User?> build() {
+    _authService = AuthService();
+    // Initialize Google Sign-In asynchronously on startup
+    _authService.initialize();
+    return _authService.authStateChanges;
+  }
 
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) =>
-      _authService.signInWithEmailAndPassword(email: email, password: password);
+  // Sign Up
+  Future<void> signUp(String email, String password) async {
+    await _authService.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
 
-  Future<void> signOut() => _authService.signOut();
+  // Sign In
+  Future<void> signIn(String email, String password) async {
+    await _authService.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  // Google Sign-In (initialization handled internally by AuthService)
+  Future<UserCredential?> signInWithGoogle() async {
+    return await _authService.signInWithGoogle();
+  }
+
+  // Silent Google Sign-In (for returning users)
+  Future<GoogleSignInAccount?> attemptSilentGoogleSignIn() async {
+    return await _authService.attemptSilentGoogleSignIn();
+  }
+
+  // Sign Out
+  Future<void> signOut() async {
+    await _authService.signOut();
+  }
 }
 
+// Convenience provider for current user
 @riverpod
-AuthService authService(Ref ref) => AuthService();
-
-@riverpod
-AuthRepo authRepo(Ref ref) => AuthRepo(ref.watch(authServiceProvider));
+User? currentUser(Ref ref) {
+  final authState = ref.watch(authRepoProvider);
+  return authState.when(
+    data: (user) => user,
+    loading: () => null,
+    error: (_, _) => null,
+  );
+}

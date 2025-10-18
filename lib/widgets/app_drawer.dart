@@ -77,7 +77,7 @@ class AppDrawer extends ConsumerWidget {
                       TextButton(
                         child: const Text('Logout'),
                         onPressed: () {
-                          ref.read(authRepoProvider).signOut();
+                          ref.read(authRepoProvider.notifier).signOut();
                           Navigator.of(dialogContext).pop();
                         },
                       ),

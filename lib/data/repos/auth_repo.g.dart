@@ -9,60 +9,17 @@ part of 'auth_repo.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(authService)
-const authServiceProvider = AuthServiceProvider._();
-
-final class AuthServiceProvider
-    extends $FunctionalProvider<AuthService, AuthService, AuthService>
-    with $Provider<AuthService> {
-  const AuthServiceProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authServiceProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$authServiceHash();
-
-  @$internal
-  @override
-  $ProviderElement<AuthService> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  AuthService create(Ref ref) {
-    return authService(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthService value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AuthService>(value),
-    );
-  }
-}
-
-String _$authServiceHash() => r'ed0872794ec8e4cb3f50cb37b9c0b9467eb51ddb';
-
-@ProviderFor(authRepo)
+@ProviderFor(AuthRepo)
 const authRepoProvider = AuthRepoProvider._();
 
-final class AuthRepoProvider
-    extends $FunctionalProvider<AuthRepo, AuthRepo, AuthRepo>
-    with $Provider<AuthRepo> {
+final class AuthRepoProvider extends $StreamNotifierProvider<AuthRepo, User?> {
   const AuthRepoProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'authRepoProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -72,21 +29,66 @@ final class AuthRepoProvider
 
   @$internal
   @override
-  $ProviderElement<AuthRepo> $createElement($ProviderPointer pointer) =>
+  AuthRepo create() => AuthRepo();
+}
+
+String _$authRepoHash() => r'e586cbacf43fc1f2400fb9c045f96142a8864207';
+
+abstract class _$AuthRepo extends $StreamNotifier<User?> {
+  Stream<User?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<User?>, User?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<User?>, User?>,
+              AsyncValue<User?>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(currentUser)
+const currentUserProvider = CurrentUserProvider._();
+
+final class CurrentUserProvider extends $FunctionalProvider<User?, User?, User?>
+    with $Provider<User?> {
+  const CurrentUserProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentUserProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$currentUserHash();
+
+  @$internal
+  @override
+  $ProviderElement<User?> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  AuthRepo create(Ref ref) {
-    return authRepo(ref);
+  User? create(Ref ref) {
+    return currentUser(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthRepo value) {
+  Override overrideWithValue(User? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AuthRepo>(value),
+      providerOverride: $SyncValueProvider<User?>(value),
     );
   }
 }
 
-String _$authRepoHash() => r'936a80bfe41721e4bb9a172c4cf8c352c55c15e4';
+String _$currentUserHash() => r'17de811a12285acf7f172944bda96bf59a33fb40';

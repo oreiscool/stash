@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/auth_repo.dart';
 import 'package:stash/data/services/auth_service.dart';
@@ -28,10 +29,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() => _isLoading = true);
     try {
       await ref
-          .read(authRepoProvider)
-          .signInWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
+          .read(authRepoProvider.notifier)
+          .signIn(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
           );
     } catch (e) {
       if (mounted) {
@@ -54,10 +55,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() => _isLoading = true);
     try {
       await ref
-          .read(authRepoProvider)
-          .createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),
+          .read(authRepoProvider.notifier)
+          .signUp(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
           );
     } catch (e) {
       if (mounted) {
@@ -116,6 +117,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                     ),
                     obscureText: !_isPasswordVisible,
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        try {
+                          HapticFeedback.lightImpact();
+                          await ref
+                              .read(authRepoProvider.notifier)
+                              .signInWithGoogle();
+                        } catch (e) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Failed to sign in with Google: $e',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      icon: Icon(Icons.login),
+                      label: Text(
+                        'Continue with Google',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 16),
                   Row(

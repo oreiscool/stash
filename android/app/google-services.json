@@ -7,31 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:144787903889:android:62740d5822523a9eab3630",
-        "android_client_info": {
-          "package_name": "com.example.stash"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCEqtjay-KI7Cj_XDB7CajxM94-eiR7Ils"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:144787903889:android:d3d921489b9d3dcfab3630",
         "android_client_info": {
           "package_name": "com.stevie.stash"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "144787903889-prste3km2q1podkp2gc7lo6t5mo6m0b0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stevie.stash",
+            "certificate_hash": "e7a8dc7072612519a495e3b4fe919a700c0e1cbc"
+          }
+        },
+        {
+          "client_id": "144787903889-dsrije14pnhgrtep5ibnua7hr268plq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCEqtjay-KI7Cj_XDB7CajxM94-eiR7Ils"
@@ -39,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144787903889-dsrije14pnhgrtep5ibnua7hr268plq2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "144787903889-qj1hqd09dg7i9e7hk3m87i3vac8cbq65.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.stevie.stash"
+              }
+            }
+          ]
         }
       }
     }
