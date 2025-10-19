@@ -26,6 +26,7 @@ class StashRepo {
       content: content,
       type: type,
       tags: tags,
+      isPinned: false,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     );
@@ -40,6 +41,43 @@ class StashRepo {
   Future<void> deleteStashItem(String itemId) async {
     return _service.deleteStashItem(itemId);
   }
+
+  Future<void> togglePin(StashItem item) async {
+    if (item.id == null) {
+      throw StashServiceException('Cannot pin/unpin an item without an ID.');
+    }
+
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      throw StashServiceException('User not authenticated.');
+    }
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('stash_items')
+        .doc(item.id)
+        .update({'isPinned': !item.isPinned});
+  }
+}
+
+List<StashItem> _sortItems(List<StashItem> items) {
+  // Sort: pinned items first (by updatedAt), then unpinned items (by updatedAt)
+  final pinned = items.where((item) => item.isPinned).toList();
+  final unpinned = items.where((item) => !item.isPinned).toList();
+
+  pinned.sort((a, b) {
+    final aTime = a.updatedAt ?? a.createdAt;
+    final bTime = b.updatedAt ?? b.createdAt;
+    return bTime.compareTo(aTime);
+  });
+
+  unpinned.sort((a, b) {
+    final aTime = a.updatedAt ?? a.createdAt;
+    final bTime = b.updatedAt ?? b.createdAt;
+    return bTime.compareTo(aTime);
+  });
+  return [...pinned, ...unpinned];
 }
 
 @riverpod
@@ -59,17 +97,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
       .snapshots()
       .map((snapshot) {
         var items = snapshot.docs
-            .map(
-              (doc) => StashItem(
-                id: doc.id,
-                userId: userId,
-                content: doc['content'],
-                type: doc['type'],
-                tags: List<String>.from(doc['tags'] ?? []),
-                createdAt: doc['createdAt'],
-                updatedAt: doc['updatedAt'],
-              ),
-            )
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
             .toList();
         if (selectedTags.isNotEmpty) {
           items = items
@@ -78,7 +106,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
               )
               .toList();
         }
-        return items;
+        return _sortItems(items);
       });
 }
 
@@ -118,6 +146,6 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
               tags.any((tag) => tag.contains(normalizedQuery));
         }).toList();
 
-        return items;
+        return _sortItems(items);
       });
 }

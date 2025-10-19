@@ -74,6 +74,26 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
           IconButton(
             onPressed: () async {
               HapticFeedback.lightImpact();
+              await ref.read(stashRepoProvider).togglePin(_currentItem);
+              setState(() {
+                _currentItem = _currentItem.copyWith(
+                  isPinned: !_currentItem.isPinned,
+                );
+              });
+              if (!context.mounted) return;
+              showSnackBar(
+                context,
+                _currentItem.isPinned ? 'Pinned to top' : 'Unpinned',
+              );
+            },
+            icon: Icon(
+              _currentItem.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+            ),
+            tooltip: _currentItem.isPinned ? 'Unpin' : 'Pin to top',
+          ),
+          IconButton(
+            onPressed: () async {
+              HapticFeedback.lightImpact();
               await Clipboard.setData(
                 ClipboardData(text: _currentItem.content),
               );

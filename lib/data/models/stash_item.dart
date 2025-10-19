@@ -6,6 +6,7 @@ class StashItem {
   final String content;
   final String type;
   final List<String> tags;
+  final bool isPinned;
   final Timestamp createdAt;
   final Timestamp? updatedAt;
 
@@ -15,6 +16,7 @@ class StashItem {
     required this.content,
     required this.type,
     required this.tags,
+    required this.isPinned,
     required this.createdAt,
     this.updatedAt,
   });
@@ -25,6 +27,7 @@ class StashItem {
     String? content,
     String? type,
     List<String>? tags,
+    bool? isPinned,
     Timestamp? createdAt,
     Timestamp? updatedAt,
   }) {
@@ -34,6 +37,7 @@ class StashItem {
       content: content ?? this.content,
       type: type ?? this.type,
       tags: tags ?? this.tags,
+      isPinned: isPinned ?? this.isPinned,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -49,6 +53,7 @@ class StashItem {
       content: data['content'] ?? '',
       type: data['type'] ?? 'Note',
       tags: List<String>.from(data['tags'] ?? []),
+      isPinned: data['isPinned'] ?? false,
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'],
     );
@@ -60,6 +65,7 @@ class StashItem {
       'content': content,
       'type': type,
       'tags': tags,
+      'isPinned': isPinned,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
