@@ -7,6 +7,8 @@ class StashItem {
   final String type;
   final List<String> tags;
   final bool isPinned;
+  final bool isDeleted;
+  final Timestamp? deletedAt;
   final Timestamp createdAt;
   final Timestamp? updatedAt;
 
@@ -16,7 +18,9 @@ class StashItem {
     required this.content,
     required this.type,
     required this.tags,
-    required this.isPinned,
+    this.isPinned = false,
+    this.isDeleted = false,
+    this.deletedAt,
     required this.createdAt,
     this.updatedAt,
   });
@@ -28,6 +32,8 @@ class StashItem {
     String? type,
     List<String>? tags,
     bool? isPinned,
+    bool? isDeleted,
+    Timestamp? deletedAt,
     Timestamp? createdAt,
     Timestamp? updatedAt,
   }) {
@@ -38,6 +44,8 @@ class StashItem {
       type: type ?? this.type,
       tags: tags ?? this.tags,
       isPinned: isPinned ?? this.isPinned,
+      isDeleted: isDeleted ?? this.isDeleted,
+      deletedAt: deletedAt ?? this.deletedAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -54,6 +62,8 @@ class StashItem {
       type: data['type'] ?? 'Note',
       tags: List<String>.from(data['tags'] ?? []),
       isPinned: data['isPinned'] ?? false,
+      isDeleted: data['isDeleted'] ?? false,
+      deletedAt: data['deletedAt'],
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'],
     );
@@ -66,8 +76,19 @@ class StashItem {
       'type': type,
       'tags': tags,
       'isPinned': isPinned,
+      'isDeleted': isDeleted,
+      'deletedAt': deletedAt,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
+  }
+
+  // Helper to check if item should be permanently deleted
+  bool shouldBeDeleted() {
+    if (!isDeleted || deletedAt == null) return false;
+    final now = DateTime.now();
+    final deletedDate = deletedAt!.toDate();
+    final daysSinceDeleted = now.difference(deletedDate).inDays;
+    return daysSinceDeleted >= 7;
   }
 }
