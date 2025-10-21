@@ -38,8 +38,20 @@ class StashRepo {
     return _service.updateStashItem(item);
   }
 
-  Future<void> deleteStashItem(String itemId) async {
-    return _service.deleteStashItem(itemId);
+  Future<void> moveToTrash(String itemId) async {
+    return _service.softDeleteStashItem(itemId);
+  }
+
+  Future<void> restoreFromTrash(String itemId) async {
+    return _service.restoreStashItem(itemId);
+  }
+
+  Future<void> permanentlyDelete(String itemId) async {
+    return _service.permanentlyDeleteStashItem(itemId);
+  }
+
+  Future<void> cleanupOldDeletedItems() async {
+    return _service.cleanupOldDeletedItems();
   }
 
   Future<void> togglePin(StashItem item) async {
@@ -99,6 +111,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
         var items = snapshot.docs
             .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
             .toList();
+        items = items.where((item) => !item.isDeleted).toList();
         if (selectedTags.isNotEmpty) {
           items = items
               .where(
@@ -107,6 +120,34 @@ Stream<List<StashItem>> stashStream(Ref ref) {
               .toList();
         }
         return _sortItems(items);
+      });
+}
+
+@riverpod
+Stream<List<StashItem>> trashStream(Ref ref) {
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null) {
+    return Stream.value([]);
+  }
+
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .collection('stash_items')
+      .where('isDeleted', isEqualTo: true)
+      .snapshots()
+      .map((snapshot) {
+        var items = snapshot.docs
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
+            .toList();
+
+        // Sort by deletion date (most recent first)
+        items.sort((a, b) {
+          final aTime = a.deletedAt ?? Timestamp.now();
+          final bTime = b.deletedAt ?? Timestamp.now();
+          return bTime.compareTo(aTime);
+        });
+        return items;
       });
 }
 
@@ -136,6 +177,7 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
         var items = snapshot.docs
             .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
             .toList();
+        items = items.where((item) => !item.isDeleted).toList();
         items = items.where((item) {
           final content = item.content.toLowerCase();
           final type = item.type.toLowerCase();

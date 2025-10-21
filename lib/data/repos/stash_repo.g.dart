@@ -46,7 +46,46 @@ final class StashStreamProvider
   }
 }
 
-String _$stashStreamHash() => r'fe5a897fce8228f45bba3778de71885cff2a3acd';
+String _$stashStreamHash() => r'de5a2bd91abcd535a4832be36730b60f6aaf5afb';
+
+@ProviderFor(trashStream)
+const trashStreamProvider = TrashStreamProvider._();
+
+final class TrashStreamProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<StashItem>>,
+          List<StashItem>,
+          Stream<List<StashItem>>
+        >
+    with $FutureModifier<List<StashItem>>, $StreamProvider<List<StashItem>> {
+  const TrashStreamProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'trashStreamProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$trashStreamHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<StashItem>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<StashItem>> create(Ref ref) {
+    return trashStream(ref);
+  }
+}
+
+String _$trashStreamHash() => r'428966372a081e18a5dad55a90fb69b850f53e52';
 
 @ProviderFor(stashService)
 const stashServiceProvider = StashServiceProvider._();
@@ -185,7 +224,7 @@ final class StashSearchProvider
   }
 }
 
-String _$stashSearchHash() => r'0c5dbad42a64ed80e3d0165b67dbcff1b84cbb40';
+String _$stashSearchHash() => r'd88b133024e2270dc6dfa9312daefb26a69a1bdc';
 
 final class StashSearchFamily extends $Family
     with $FunctionalFamilyOverride<Stream<List<StashItem>>, String> {

@@ -44,7 +44,36 @@ class StashService {
     }
   }
 
-  Future<void> deleteStashItem(String itemId) async {
+  Future<void> softDeleteStashItem(String itemId) async {
+    try {
+      await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('stash_items')
+          .doc(itemId)
+          .update({
+            'isDeleted': true,
+            'deletedAt': FieldValue.serverTimestamp(),
+          });
+    } catch (e) {
+      throw StashServiceException('Failed to delete item: $e');
+    }
+  }
+
+  Future<void> restoreStashItem(String itemId) async {
+    try {
+      await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('stash_items')
+          .doc(itemId)
+          .update({'isDeleted': false, 'deletedAt': null});
+    } catch (e) {
+      throw StashServiceException('Failed to restore item: $e');
+    }
+  }
+
+  Future<void> permanentlyDeleteStashItem(String itemId) async {
     try {
       await _db
           .collection('users')
@@ -53,7 +82,29 @@ class StashService {
           .doc(itemId)
           .delete();
     } catch (e) {
-      throw StashServiceException('Failed to delete item from stash: $e');
+      throw StashServiceException('Failed to permanently delete item: $e');
+    }
+  }
+
+  Future<void> cleanupOldDeletedItems() async {
+    try {
+      final sevenDaysAgo = Timestamp.fromDate(
+        DateTime.now().subtract(Duration(days: 7)),
+      );
+
+      final snapshot = await _db
+          .collection('users')
+          .doc(_auth.currentUser?.uid)
+          .collection('stash_items')
+          .where('isDeleted', isEqualTo: true)
+          .where('deletedAt', isLessThan: sevenDaysAgo)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw StashServiceException('Failed to cleanup old items: $e');
     }
   }
 }
