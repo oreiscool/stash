@@ -67,11 +67,11 @@ class _AddTagDialogState extends ConsumerState<AddTagDialog> {
                     .read(tagRepoProvider)
                     .updateTag(widget.tagToEdit!.id, tagName);
                 Navigator.of(context).pop();
-                showSnackBar(context, 'Tag updated to "$tagName".');
+                showSnackBar(context, 'Tag updated to "$tagName"');
               } else {
                 ref.read(tagRepoProvider).addTag(tagName);
                 Navigator.of(context).pop();
-                showSnackBar(context, 'Tag "$tagName" added.');
+                showSnackBar(context, 'Tag "$tagName" added');
               }
             }
           },

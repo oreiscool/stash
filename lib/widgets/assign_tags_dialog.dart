@@ -30,7 +30,7 @@ class _AssignTagsDialogState extends ConsumerState<AssignTagsDialog> {
         child: tagsStream.when(
           data: (allTags) {
             if (allTags.isEmpty) {
-              return const Center(child: Text('No tags created yet.'));
+              return const Center(child: Text('No tags created yet'));
             }
             return Wrap(
               spacing: 8,
@@ -53,7 +53,7 @@ class _AssignTagsDialogState extends ConsumerState<AssignTagsDialog> {
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, stackTrace) =>
-              const Center(child: Text('Could not load tags.')),
+              const Center(child: Text('Could not load tags')),
         ),
       ),
       actions: [

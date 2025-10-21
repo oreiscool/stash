@@ -55,10 +55,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body: searchResults.when(
         data: (items) {
           if (_query.isEmpty) {
-            return const Center(child: Text('Start typing to search.'));
+            return const Center(child: Text('Start typing to search'));
           }
           if (items.isEmpty) {
-            return const Center(child: Text('No results found.'));
+            return const Center(child: Text('No results found'));
           }
           return ListView.builder(
             padding: const EdgeInsets.all(12),
