@@ -131,20 +131,22 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
               context: context,
               builder: (BuildContext dialogContext) {
                 return AlertDialog(
-                  title: const Text('Confirm Deletion'),
+                  title: const Text('Move to Trash?'),
                   content: const Text(
-                    'Are you sure you want to permanently delete this item?',
+                    'This item will be moved to trash.\nYou can restore it within 7 days.',
                   ),
                   actions: <Widget>[
                     TextButton(
-                      child: const Text('Delete'),
-                      onPressed: () {
-                        ref
-                            .read(stashRepoProvider)
-                            .deleteStashItem(widget.stashItem.id!);
+                      child: const Text('Move to Trash'),
+                      onPressed: () async {
                         Navigator.of(dialogContext).pop();
+                        HapticFeedback.mediumImpact();
+                        await ref
+                            .read(stashRepoProvider)
+                            .moveToTrash(widget.stashItem.id!);
+                        if (!context.mounted) return;
                         Navigator.of(context).pop();
-                        showSnackBar(context, 'Item deleted.');
+                        showSnackBar(context, 'Moved to trash');
                       },
                     ),
                     TextButton(

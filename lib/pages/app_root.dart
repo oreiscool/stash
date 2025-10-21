@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/pages/home_page.dart';
+import 'package:stash/pages/trash_page.dart';
 import 'package:stash/pages/tag_management_page.dart';
 import 'package:stash/pages/search_page.dart';
 import 'package:stash/providers/ui_providers.dart';
@@ -91,8 +92,14 @@ class AppRoot extends ConsumerWidget {
                     ),
                   ),
                 )
-              : const Text('Manage Tags'),
-          centerTitle: currentPage == 'tags',
+              : Text(
+                  currentPage == 'tags'
+                      ? 'Manage Tags'
+                      : currentPage == 'trash'
+                      ? 'Trash'
+                      : 'Stash',
+                ),
+          centerTitle: currentPage != 'home',
           actions: currentPage == 'home'
               ? [
                   IconButton(
@@ -125,6 +132,14 @@ class AppRoot extends ConsumerWidget {
                   return await ref.read(tagStreamProvider.future);
                 },
                 child: const TagManagementPage(),
+              )
+            : currentPage == 'trash'
+            ? RefreshIndicator(
+                onRefresh: () async {
+                  ref.invalidate(trashStreamProvider);
+                  return await ref.read(trashStreamProvider.future);
+                },
+                child: const TrashPage(),
               )
             : const HomePage(),
         floatingActionButton: currentPage == 'home'

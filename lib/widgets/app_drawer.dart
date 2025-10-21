@@ -63,6 +63,24 @@ class AppDrawer extends ConsumerWidget {
                 ref.read(currentPageProvider.notifier).setPage('tags');
               },
             ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: Icon(
+                currentPage == 'trash' ? Icons.delete : Icons.delete_outline,
+              ),
+              title: const Text('Trash'),
+              selected: currentPage == 'trash',
+              selectedTileColor: Theme.of(
+                context,
+              ).colorScheme.secondaryContainer,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                ref.read(currentPageProvider.notifier).setPage('trash');
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
