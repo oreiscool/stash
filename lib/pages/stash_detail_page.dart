@@ -106,8 +106,17 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
           IconButton(
             onPressed: () {
               if (_isEditing) {
-                final updatedType = _parseContentType(_contentController.text);
                 final updatedContent = _contentController.text.trim();
+
+                if (updatedContent == _currentItem.content) {
+                  setState(() {
+                    _isEditing = false;
+                  });
+                  showSnackBar(context, 'No changes made');
+                  return;
+                }
+
+                final updatedType = _parseContentType(_contentController.text);
                 final updatedItem = _currentItem.copyWith(
                   content: updatedContent,
                   type: updatedType,
@@ -116,7 +125,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                 setState(() {
                   _currentItem = updatedItem;
                 });
-                showSnackBar(context, 'Item updated.');
+                showSnackBar(context, 'Item updated');
               }
               setState(() {
                 _isEditing = !_isEditing;
@@ -239,8 +248,8 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                               style: TextStyle(color: Colors.grey),
                             )
                           : Wrap(
-                              spacing: 6,
-                              runSpacing: 4,
+                              spacing: 8,
+                              runSpacing: 8,
                               children: _currentItem.tags
                                   .map(
                                     (tag) => Chip(
