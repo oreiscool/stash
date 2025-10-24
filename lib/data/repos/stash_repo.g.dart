@@ -224,7 +224,7 @@ final class StashSearchProvider
   }
 }
 
-String _$stashSearchHash() => r'd88b133024e2270dc6dfa9312daefb26a69a1bdc';
+String _$stashSearchHash() => r'7477450e0989d9ee493ee561416826778c778ed7';
 
 final class StashSearchFamily extends $Family
     with $FunctionalFamilyOverride<Stream<List<StashItem>>, String> {
