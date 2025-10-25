@@ -47,12 +47,14 @@ class SelectionActionBar extends ConsumerWidget {
     if (shouldDelete == true && context.mounted) {
       HapticFeedback.mediumImpact();
       final repo = ref.read(stashRepoProvider);
-      for (final id in selectedIds) {
-        await repo.moveToTrash(id);
-      }
-      ref.read(selectionModeProvider.notifier).exitSelectionMode();
+
       if (!context.mounted) return;
+      // Exit selection mode immediately for better UX
+      ref.read(selectionModeProvider.notifier).exitSelectionMode();
       showSnackBar(context, '${selectedIds.length} item(s) moved to trash');
+
+      // Delete all items in parallel to avoid errors when exiting selection mode while widget is mounted
+      Future.wait(selectedIds.map((id) => repo.moveToTrash(id)));
     }
   }
 
@@ -67,26 +69,32 @@ class SelectionActionBar extends ConsumerWidget {
       return !item.isPinned;
     });
 
-    // If any item is unpinned, pin everything. Otherwise unpin everything
+    // If any item is unpinned, pin everything
+    // Otherwise unpin everything
     final shouldPin = hasUnpinned;
 
     HapticFeedback.lightImpact();
     final repo = ref.read(stashRepoProvider);
 
-    for (final id in selectedIds) {
-      final item = items.firstWhere((item) => item.id == id);
-      if (item.isPinned != shouldPin) {
-        await repo.togglePin(item);
-      }
-    }
-
-    ref.read(selectionModeProvider.notifier).exitSelectionMode();
     if (!context.mounted) return;
+    // Exit selection mode immediately for better UX
+    ref.read(selectionModeProvider.notifier).exitSelectionMode();
     showSnackBar(
       context,
       shouldPin
           ? '${selectedIds.length} item(s) pinned'
           : '${selectedIds.length} item(s) unpinned',
+    );
+
+    // Pin/unpin all items in parallel for errors that also occur with the deletion
+    Future.wait(
+      selectedIds.map((id) {
+        final item = items.firstWhere((item) => item.id == id);
+        if (item.isPinned != shouldPin) {
+          return repo.togglePin(item);
+        }
+        return Future.value(); // Return completed future for items that don't need updating
+      }),
     );
   }
 
@@ -124,8 +132,12 @@ class SelectionActionBar extends ConsumerWidget {
 
     // Determine if we should show pin or unpin button
     final hasUnpinned = selectionState.selectedIds.any((id) {
-      final item = items.firstWhere((item) => item.id == id);
-      return !item.isPinned;
+      try {
+        final item = items.firstWhere((item) => item.id == id);
+        return !item.isPinned;
+      } catch (e) {
+        return false;
+      }
     });
 
     return Material(
