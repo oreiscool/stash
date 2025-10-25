@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/widgets/search_result_card.dart';
 import 'package:stash/data/repos/stash_repo.dart';
+import 'package:stash/providers/selection_providers.dart';
+import 'package:stash/widgets/selection_action_bar.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -26,55 +28,79 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final searchResults = ref.watch(stashSearchProvider(_query));
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Hero(
-          tag: 'search-bar',
-          child: Material(
-            type: MaterialType.transparency,
-            child: TextField(
-              controller: _searchController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Search your stash...',
-                border: InputBorder.none,
-              ),
-              onChanged: (query) {
-                if (_debounce?.isActive ?? false) _debounce!.cancel();
-                _debounce = Timer(const Duration(milliseconds: 500), () {
-                  setState(() {
-                    _query = query;
+    final selectionState = ref.watch(selectionModeProvider);
+
+    return PopScope(
+      canPop: !selectionState.isActive,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && selectionState.isActive) {
+          ref.read(selectionModeProvider.notifier).exitSelectionMode();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: Hero(
+            tag: 'search-bar',
+            child: Material(
+              type: MaterialType.transparency,
+              child: TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search your stash...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (query) {
+                  if (_debounce?.isActive ?? false) _debounce!.cancel();
+                  _debounce = Timer(const Duration(milliseconds: 500), () {
+                    setState(() {
+                      _query = query;
+                    });
                   });
-                });
-              },
+                },
+              ),
             ),
           ),
         ),
-      ),
-      body: searchResults.when(
-        data: (items) {
-          if (_query.isEmpty) {
-            return const Center(child: Text('Start typing to search'));
-          }
-          if (items.isEmpty) {
-            return const Center(child: Text('No results found'));
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return SearchResultCard(stashItem: item, query: _query);
-            },
-          );
-        },
-        error: (err, stackTrace) {
-          return Center(child: Text('An error occurred: $err'));
-        },
-        loading: () {
-          return const Center(child: CircularProgressIndicator());
-        },
+        body: Stack(
+          children: [
+            searchResults.when(
+              data: (items) {
+                if (_query.isEmpty) {
+                  return const Center(child: Text('Start typing to search'));
+                }
+                if (items.isEmpty) {
+                  return const Center(child: Text('No results found'));
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return SearchResultCard(stashItem: item, query: _query);
+                  },
+                );
+              },
+              error: (err, stackTrace) {
+                return Center(child: Text('An error occurred: $err'));
+              },
+              loading: () {
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
+            if (selectionState.isActive)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: searchResults.maybeWhen(
+                  data: (items) => SelectionActionBar(items: items),
+                  orElse: () => const SizedBox.shrink(),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

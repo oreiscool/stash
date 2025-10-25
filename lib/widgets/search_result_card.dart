@@ -5,6 +5,7 @@ import 'package:stash/widgets/highlighted_text.dart';
 import 'package:stash/pages/stash_detail_page.dart';
 import 'package:stash/utils/date_formatter.dart';
 import 'package:stash/providers/ui_providers.dart';
+import 'package:stash/providers/selection_providers.dart';
 
 class SearchResultCard extends ConsumerWidget {
   const SearchResultCard({
@@ -19,22 +20,56 @@ class SearchResultCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(clockStreamProvider);
+    final selectionState = ref.watch(selectionModeProvider);
+    final isSelected = selectionState.isSelected(stashItem.id!);
+    final isSelectionMode = selectionState.isActive;
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(bottom: 8),
+      color: isSelected
+          ? Theme.of(
+              context,
+            ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+          : null,
       child: InkWell(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => StashDetailPage(stashItem: stashItem),
-          ),
-        ),
+        onTap: () {
+          if (isSelectionMode) {
+            ref
+                .read(selectionModeProvider.notifier)
+                .toggleSelection(stashItem.id!);
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => StashDetailPage(stashItem: stashItem),
+              ),
+            );
+          }
+        },
+        onLongPress: () {
+          if (!isSelectionMode) {
+            ref
+                .read(selectionModeProvider.notifier)
+                .enterSelectionMode(stashItem.id!);
+          }
+        },
         child: Stack(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
+                  leading: isSelectionMode
+                      ? Checkbox(
+                          value: isSelected,
+                          onChanged: (_) {
+                            ref
+                                .read(selectionModeProvider.notifier)
+                                .toggleSelection(stashItem.id!);
+                          },
+                        )
+                      : null,
                   title: HighlightedText(
                     text: stashItem.content,
                     query: query,
@@ -95,7 +130,7 @@ class SearchResultCard extends ConsumerWidget {
                   ),
               ],
             ),
-            if (stashItem.isPinned)
+            if (stashItem.isPinned && !isSelectionMode)
               Positioned(
                 top: 8,
                 right: 8,

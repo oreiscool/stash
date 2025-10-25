@@ -11,6 +11,7 @@ import 'package:stash/widgets/add_tag_dialog.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/widgets/settings_bottom_sheet.dart';
+import 'package:stash/providers/selection_providers.dart';
 
 class AppRoot extends ConsumerWidget {
   const AppRoot({super.key});
@@ -18,6 +19,7 @@ class AppRoot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPage = ref.watch(currentPageProvider);
+    final selectionState = ref.watch(selectionModeProvider);
 
     return PopScope(
       canPop: currentPage == 'home',
@@ -142,27 +144,33 @@ class AppRoot extends ConsumerWidget {
                 child: const TrashPage(),
               )
             : const HomePage(),
-        floatingActionButton: currentPage == 'home'
-            ? FloatingActionButton(
-                heroTag: 'fab-home',
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const AddStashItemDialog(),
-                  );
-                },
-              )
-            : currentPage == 'tags'
-            ? FloatingActionButton(
-                heroTag: 'fab-tags',
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const AddTagDialog(),
-                  );
-                },
+        floatingActionButton: currentPage == 'home' || currentPage == 'tags'
+            ? AnimatedSlide(
+                offset: selectionState.isActive
+                    ? const Offset(0, -1.5)
+                    : Offset.zero,
+                duration: const Duration(milliseconds: 300),
+                child: currentPage == 'home'
+                    ? FloatingActionButton(
+                        heroTag: 'fab-home',
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const AddStashItemDialog(),
+                          );
+                        },
+                        child: const Icon(Icons.add),
+                      )
+                    : FloatingActionButton(
+                        heroTag: 'fab-tags',
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const AddTagDialog(),
+                          );
+                        },
+                        child: const Icon(Icons.add),
+                      ),
               )
             : null,
       ),
