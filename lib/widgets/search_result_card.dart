@@ -101,7 +101,7 @@ class SearchResultCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
-          Icons.delete_forever,
+          Icons.delete_outline,
           color: Theme.of(context).colorScheme.onErrorContainer,
         ),
       ),
