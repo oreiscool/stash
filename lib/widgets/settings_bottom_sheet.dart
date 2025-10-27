@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/providers/ui_providers.dart';
+import 'package:stash/providers/theme_providers.dart';
 
 class SettingsBottomSheet extends ConsumerWidget {
   const SettingsBottomSheet({super.key});
@@ -10,6 +11,7 @@ class SettingsBottomSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final allTags = ref.watch(tagStreamProvider);
     final selectedTags = ref.watch(selectedTagsProvider);
+    final themeSettingsAsync = ref.watch(themeSettingsProvider);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -44,6 +46,89 @@ class SettingsBottomSheet extends ConsumerWidget {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
+              const Text(
+                'Appearance',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              themeSettingsAsync.when(
+                data: (themeSettings) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Theme Mode
+                    const Text(
+                      'Theme',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment(
+                          value: 'system',
+                          label: Text('System'),
+                          icon: Icon(Icons.brightness_auto, size: 18),
+                        ),
+                        ButtonSegment(
+                          value: 'light',
+                          label: Text('Light'),
+                          icon: Icon(Icons.light_mode, size: 18),
+                        ),
+                        ButtonSegment(
+                          value: 'dark',
+                          label: Text('Dark'),
+                          icon: Icon(Icons.dark_mode, size: 18),
+                        ),
+                      ],
+                      selected: {themeSettings.themeMode},
+                      onSelectionChanged: (Set<String> selected) {
+                        ref
+                            .read(themeSettingsProvider.notifier)
+                            .setThemeMode(selected.first);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Color Scheme
+                    const Text(
+                      'Color',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment(
+                          value: 'system',
+                          label: Text('System'),
+                          icon: Icon(Icons.palette, size: 18),
+                        ),
+                        ButtonSegment(
+                          value: 'stash',
+                          label: Text('Stash'),
+                          icon: Icon(Icons.color_lens, size: 18),
+                        ),
+                      ],
+                      selected: {themeSettings.colorScheme},
+                      onSelectionChanged: (Set<String> selected) {
+                        ref
+                            .read(themeSettingsProvider.notifier)
+                            .setColorScheme(selected.first);
+                      },
+                    ),
+                  ],
+                ),
+                loading: () => const CircularProgressIndicator(),
+                error: (err, stackTrace) =>
+                    Text('Error loading theme settings: $err'),
+              ),
+              const SizedBox(height: 32),
+
+              // Tag Filtering Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -96,21 +181,6 @@ class SettingsBottomSheet extends ConsumerWidget {
                 error: (err, stackTrace) =>
                     const Center(child: Text('Error loading tags')),
               ),
-              const SizedBox(height: 32),
-              const Text(
-                'Theme',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Coming soon: Light, Dark, System, and Material You themes',
-                style: TextStyle(color: Colors.grey),
-              ),
-
-              // Add more sections here later:
-              // - Sort options
-              // - Date format preferences
-              // - etc.
             ],
           ),
         );

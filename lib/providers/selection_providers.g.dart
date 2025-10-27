@@ -41,7 +41,7 @@ final class SelectionModeProvider
   }
 }
 
-String _$selectionModeHash() => r'7f28db16847b605b804f91c164bf3240b934abf0';
+String _$selectionModeHash() => r'7dd9c6d896714029549ab07f758fb0e42b1113bb';
 
 abstract class _$SelectionMode extends $Notifier<SelectionState> {
   SelectionState build();
