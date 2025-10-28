@@ -44,10 +44,7 @@ class _AssignTagsDialogState extends ConsumerState<AssignTagsDialog> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Tag "$tagName" created and added'),
-          duration: const Duration(seconds: 1),
-        ),
+        SnackBar(content: Text('Tag "$tagName" created and added')),
       );
     } catch (e) {
       if (!mounted) return;
