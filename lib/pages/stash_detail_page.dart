@@ -121,7 +121,9 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                   content: updatedContent,
                   type: updatedType,
                 );
-                ref.read(stashRepoProvider).updateStashItem(updatedItem);
+                ref
+                    .read(stashRepoProvider)
+                    .updateStashItem(updatedItem, updateTimeStamp: true);
                 setState(() {
                   _currentItem = updatedItem;
                 });
@@ -225,7 +227,9 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                     );
                 if (updatedTags != null) {
                   final updatedItem = _currentItem.copyWith(tags: updatedTags);
-                  ref.read(stashRepoProvider).updateStashItem(updatedItem);
+                  ref
+                      .read(stashRepoProvider)
+                      .updateStashItem(updatedItem, updateTimeStamp: false);
                   setState(() {
                     _currentItem = updatedItem;
                   });

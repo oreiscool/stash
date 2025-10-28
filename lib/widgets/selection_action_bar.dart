@@ -117,7 +117,7 @@ class SelectionActionBar extends ConsumerWidget {
         final item = items.firstWhere((item) => item.id == id);
         final mergedTags = {...item.tags, ...selectedTags}.toList();
         final updatedItem = item.copyWith(tags: mergedTags);
-        await repo.updateStashItem(updatedItem);
+        await repo.updateStashItem(updatedItem, updateTimeStamp: false);
       }
 
       ref.read(selectionModeProvider.notifier).exitSelectionMode();

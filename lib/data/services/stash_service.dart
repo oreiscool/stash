@@ -25,13 +25,20 @@ class StashService {
     }
   }
 
-  Future<void> updateStashItem(StashItem item) async {
+  Future<void> updateStashItem(
+    StashItem item, {
+    bool updateTimeStamp = true,
+  }) async {
     if (item.id == null) {
       throw StashServiceException('Cannot update an item without an ID.');
     }
     try {
       final updateData = item.toMap();
-      updateData['updatedAt'] = FieldValue.serverTimestamp();
+
+      // Only update timestamp if explicitly requested
+      if (updateTimeStamp) {
+        updateData['updatedAt'] = FieldValue.serverTimestamp();
+      }
 
       await _db
           .collection('users')

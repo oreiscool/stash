@@ -34,8 +34,11 @@ class StashRepo {
     return _service.addStashItem(newItem);
   }
 
-  Future<void> updateStashItem(StashItem item) async {
-    return _service.updateStashItem(item);
+  Future<void> updateStashItem(
+    StashItem item, {
+    bool updateTimeStamp = true,
+  }) async {
+    return _service.updateStashItem(item, updateTimeStamp: updateTimeStamp);
   }
 
   Future<void> moveToTrash(String itemId) async {
