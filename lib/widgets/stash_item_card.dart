@@ -77,6 +77,7 @@ class StashItemCard extends ConsumerWidget {
       background: Container(
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 20),
+        margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
@@ -89,6 +90,7 @@ class StashItemCard extends ConsumerWidget {
       secondaryBackground: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
+        margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(12),
