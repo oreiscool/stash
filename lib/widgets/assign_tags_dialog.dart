@@ -105,13 +105,16 @@ class _AssignTagsDialogState extends ConsumerState<AssignTagsDialog> {
             tagsStream.when(
               data: (allTags) {
                 if (allTags.isEmpty) {
-                  return const Padding(
+                  return Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     child: Center(
                       child: Text(
                         'No tags yet.\nCreate one above!',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   );

@@ -37,7 +37,10 @@ class TrashPage extends ConsumerWidget {
                 children: [
                   Text(
                     '${items.length} item${items.length == 1 ? '' : 's'} in Trash',
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
                   ),
                   TextButton.icon(
                     onPressed: () {
@@ -77,7 +80,9 @@ class TrashPage extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.delete_forever, size: 18),
-                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                    ),
                     label: const Text('Empty Trash'),
                   ),
                 ],

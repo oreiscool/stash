@@ -167,14 +167,17 @@ class StashItemCard extends ConsumerWidget {
                     children: [
                       Text('Type: ${stashItem.type}'),
                       const SizedBox(width: 8),
-                      Text('•', style: TextStyle(color: Colors.grey[400])),
+                      Text(
+                        '•',
+                        style: TextStyle(color: Theme.of(context).dividerColor),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         formatItemTimestamp(
                           stashItem.createdAt.toDate(),
                           stashItem.updatedAt?.toDate(),
                         ),
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Theme.of(context).hintColor),
                       ),
                     ],
                   ),
@@ -193,7 +196,6 @@ class StashItemCard extends ConsumerWidget {
                             horizontal: 8,
                             vertical: 2,
                           ),
-                          backgroundColor: Colors.grey.shade200,
                         );
                       }).toList(),
                     ),

@@ -35,12 +35,17 @@ class TrashItemCard extends ConsumerWidget {
                   children: [
                     Text('Type: ${stashItem.type}'),
                     const SizedBox(width: 8),
-                    Text('•', style: TextStyle(color: Colors.grey[400])),
+                    Text(
+                      '•',
+                      style: TextStyle(color: Theme.of(context).dividerColor),
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       daysText,
                       style: TextStyle(
-                        color: isExpiring ? Colors.red : Colors.grey[600],
+                        color: isExpiring
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).textTheme.bodyMedium?.color,
                         fontWeight: isExpiring
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -107,7 +112,7 @@ class TrashItemCard extends ConsumerWidget {
                     icon: const Icon(Icons.delete_forever, size: 18),
                     label: const Text('Delete'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
+                      foregroundColor: Theme.of(context).colorScheme.error,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),

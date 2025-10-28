@@ -157,9 +157,12 @@ class _AddStashItemDialogState extends ConsumerState<AddStashItemDialog> {
             tagsStream.when(
               data: (allTags) {
                 if (allTags.isEmpty && _selectedTags.isEmpty) {
-                  return const Text(
+                  return Text(
                     'No tags yet. Create one above!',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),
                   );
                 }
 

@@ -182,14 +182,17 @@ class SearchResultCard extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text('•', style: TextStyle(color: Colors.grey[400])),
+                      Text(
+                        '•',
+                        style: TextStyle(color: Theme.of(context).dividerColor),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         formatItemTimestamp(
                           stashItem.createdAt.toDate(),
                           stashItem.updatedAt?.toDate(),
                         ),
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Theme.of(context).hintColor),
                       ),
                     ],
                   ),
@@ -216,9 +219,6 @@ class SearchResultCard extends ConsumerWidget {
                             horizontal: 8,
                             vertical: 2,
                           ),
-                          backgroundColor: isMatchingTag
-                              ? Colors.yellow.shade100
-                              : Colors.grey.shade200,
                         );
                       }).toList(),
                     ),

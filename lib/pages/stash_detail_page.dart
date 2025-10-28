@@ -208,7 +208,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                         options: const LinkifyOptions(looseUrl: true),
                         linkStyle: _contentTextStyle.copyWith(
                           decoration: TextDecoration.underline,
-                          color: Colors.blue,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -235,17 +235,20 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.label_outline,
                       size: 20,
-                      color: Colors.grey,
+                      color: Theme.of(context).hintColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: _currentItem.tags.isEmpty
-                          ? const Text(
+                          ? Text(
                               'Add tags',
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 14,
+                              ),
                             )
                           : Wrap(
                               spacing: 8,

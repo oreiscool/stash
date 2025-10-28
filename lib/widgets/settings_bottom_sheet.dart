@@ -36,7 +36,7 @@ class SettingsBottomSheet extends ConsumerWidget {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: Theme.of(context).dividerColor,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -151,10 +151,15 @@ class SettingsBottomSheet extends ConsumerWidget {
                   if (tags.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           'No tags created yet.\nCreate tags from the drawer menu.',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                            fontSize: 14,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
