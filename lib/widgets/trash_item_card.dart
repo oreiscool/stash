@@ -90,10 +90,6 @@ class TrashItemCard extends ConsumerWidget {
                           ),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.pop(dialogContext),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
                               onPressed: () async {
                                 Navigator.pop(dialogContext);
                                 HapticFeedback.mediumImpact();
@@ -104,6 +100,10 @@ class TrashItemCard extends ConsumerWidget {
                                 showSnackBar(context, 'Permanently deleted');
                               },
                               child: const Text('Delete'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(dialogContext),
+                              child: const Text('Cancel'),
                             ),
                           ],
                         ),
