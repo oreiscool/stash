@@ -184,7 +184,7 @@ class SelectionActionBar extends ConsumerWidget {
                 onPressed: () =>
                     _handleBulkDelete(context, ref, selectionState.selectedIds),
                 icon: Icon(Icons.delete_outline),
-                tooltip: 'Move to trash',
+                tooltip: 'Move to Trash',
               ),
             ],
           ),

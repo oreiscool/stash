@@ -94,6 +94,7 @@ class TagManagementPage extends ConsumerWidget {
                         ? null
                         : IconButton(
                             icon: const Icon(Icons.delete_outline),
+                            tooltip: 'Delete tag',
                             onPressed: () {
                               showDialog(
                                 context: context,

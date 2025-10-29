@@ -134,10 +134,12 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
               });
             },
             icon: Icon(_isEditing ? Icons.save_outlined : Icons.edit_outlined),
+            tooltip: _isEditing ? 'Save changes' : 'Edit',
           ),
 
           IconButton(
             icon: const Icon(Icons.delete_outline_outlined),
+            tooltip: 'Move to Trash',
             onPressed: () => showDialog(
               context: context,
               builder: (BuildContext dialogContext) {

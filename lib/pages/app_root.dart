@@ -114,6 +114,7 @@ class AppRoot extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.settings),
+                    tooltip: 'Settings',
                   ),
                 ]
               : [],
