@@ -42,48 +42,71 @@ class TrashPage extends ConsumerWidget {
                       color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
-                  TextButton.icon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (dialogContext) => AlertDialog(
-                          title: const Text('Empty Trash?'),
-                          content: const Text(
-                            'Are you sure you want to permanently delete all items in the trash?\nThis action cannot be undone.',
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.of(dialogContext).pop();
-                                HapticFeedback.mediumImpact();
-
-                                // Delete all items
-                                for (var item in items) {
-                                  await ref
-                                      .read(stashRepoProvider)
-                                      .permanentlyDelete(item.id!);
-                                }
-
-                                if (!context.mounted) return;
-                                showSnackBar(context, 'Trash has been emptied');
-                              },
-                              child: const Text('Empty Trash'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(dialogContext).pop();
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () async {
+                          await ref
+                              .read(stashRepoProvider)
+                              .cleanupOldDeletedItems();
+                          if (!context.mounted) return;
+                          showSnackBar(context, 'Expired items cleaned up');
+                        },
+                        icon: const Icon(Icons.cleaning_services, size: 18),
+                        label: const Text('Clean Up'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.delete_forever, size: 18),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                    label: const Text('Empty Trash'),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (dialogContext) => AlertDialog(
+                              title: const Text('Empty Trash?'),
+                              content: const Text(
+                                'Are you sure you want to permanently delete all items in the trash?\nThis action cannot be undone.',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(dialogContext).pop();
+                                    HapticFeedback.mediumImpact();
+
+                                    // Delete all items
+                                    for (var item in items) {
+                                      await ref
+                                          .read(stashRepoProvider)
+                                          .permanentlyDelete(item.id!);
+                                    }
+
+                                    if (!context.mounted) return;
+                                    showSnackBar(
+                                      context,
+                                      'Trash has been emptied',
+                                    );
+                                  },
+                                  child: const Text('Empty Trash'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.delete_forever, size: 18),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                        label: const Text('Empty Trash'),
+                      ),
+                    ],
                   ),
                 ],
               ),

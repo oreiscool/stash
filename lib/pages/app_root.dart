@@ -13,11 +13,36 @@ import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/widgets/settings_bottom_sheet.dart';
 import 'package:stash/providers/selection_providers.dart';
 
-class AppRoot extends ConsumerWidget {
+class AppRoot extends ConsumerStatefulWidget {
   const AppRoot({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppRoot> createState() => _AppRootState();
+}
+
+class _AppRootState extends ConsumerState<AppRoot> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Run trash cleanup after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _runBackgroundCleanup();
+    });
+  }
+
+  Future<void> _runBackgroundCleanup() async {
+    try {
+      await ref.read(stashRepoProvider).cleanupOldDeletedItems();
+      debugPrint('Trash cleanup completed');
+    } catch (e) {
+      debugPrint('Trash cleanup failed: $e');
+      // Fail silently - don't bother the user
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentPage = ref.watch(currentPageProvider);
     final selectionState = ref.watch(selectionModeProvider);
 
