@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color _stashPrimary = Color(0xFF003D66); // Dark blue from icon
+  static const Color _stashPrimary = Color(0xFF002147); // Dark blue from icon
 
   // Light Theme - Stash Colors
   static final ThemeData stashLightTheme = ThemeData(
