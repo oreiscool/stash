@@ -15,12 +15,12 @@ class SettingsBottomSheet extends ConsumerWidget {
     final themeSettingsAsync = ref.watch(themeSettingsProvider);
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
+      initialChildSize: 0.8,
       minChildSize: 0.4,
-      maxChildSize: 0.9,
+      maxChildSize: 1.0,
       expand: false,
       snap: true,
-      snapSizes: const [0.6, 0.9],
+      snapSizes: const [0.8, 1.0],
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
