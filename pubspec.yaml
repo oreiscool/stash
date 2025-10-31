@@ -21,6 +21,7 @@ dependencies:
   google_sign_in: ^7.2.0
   shared_preferences: ^2.5.3
   dynamic_color: ^1.8.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -33,5 +34,25 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/images/
+    - assets/icons/stash_logo.png
+    - assets/icons/stash_icon.png
+    - assets/icons/stash_icon_foreground.png
+    - assets/icons/stash_icon_monochrome.png
   uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  
+  # Standard icon
+  image_path: "assets/icons/stash_icon.png"
+  
+  # Android Adaptive Icon
+  adaptive_icon_background: "#002147"
+  adaptive_icon_foreground: "assets/icons/stash_icon_foreground.png"
+  
+  # Android 13+ Themed Icon
+  adaptive_icon_monochrome: "assets/icons/stash_icon_monochrome.png"
+  
+  # iOS
+  remove_alpha_ios: true

@@ -146,7 +146,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                     child: Center(
                       child: Image.asset(
-                        'assets/images/stash_logo.png',
+                        'assets/icons/stash_logo.png',
                         height: 80,
                         width: 80,
                         errorBuilder: (context, error, stackTrace) => Icon(
