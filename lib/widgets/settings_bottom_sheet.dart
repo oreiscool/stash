@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
 import 'package:stash/providers/ui_providers.dart';
 import 'package:stash/providers/theme_providers.dart';
+import 'package:stash/providers/sort_providers.dart';
 
 class SettingsBottomSheet extends ConsumerWidget {
   const SettingsBottomSheet({super.key});
@@ -126,6 +127,43 @@ class SettingsBottomSheet extends ConsumerWidget {
                 error: (err, stackTrace) =>
                     Text('Error loading theme settings: $err'),
               ),
+              const SizedBox(height: 32),
+
+              // Sort Option Section
+              const Text(
+                'Sort Items',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              ref
+                  .watch(sortPreferenceProvider)
+                  .when(
+                    data: (sortMode) => SegmentedButton<SortMode>(
+                      segments: SortMode.values
+                          .map(
+                            (mode) => ButtonSegment(
+                              value: mode,
+                              label: Text(mode.label),
+                              icon: Icon(
+                                mode == SortMode.recent
+                                    ? Icons.arrow_downward
+                                    : Icons.arrow_upward,
+                                size: 18,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      selected: {sortMode},
+                      onSelectionChanged: (Set<SortMode> selected) {
+                        ref
+                            .read(sortPreferenceProvider.notifier)
+                            .setSortMode(selected.first);
+                      },
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (err, stackTrace) =>
+                        Text('Error loading sort preference: $err'),
+                  ),
               const SizedBox(height: 32),
 
               // Tag Filtering Section

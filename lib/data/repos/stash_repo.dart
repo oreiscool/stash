@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/data/services/stash_service.dart';
 import 'package:stash/providers/ui_providers.dart';
+import 'package:stash/providers/sort_providers.dart';
 
 part 'stash_repo.g.dart';
 
@@ -76,22 +77,29 @@ class StashRepo {
   }
 }
 
-List<StashItem> _sortItems(List<StashItem> items) {
+List<StashItem> _sortItems(List<StashItem> items, SortMode sortMode) {
   // Sort: pinned items first (by updatedAt), then unpinned items (by updatedAt)
   final pinned = items.where((item) => item.isPinned).toList();
   final unpinned = items.where((item) => !item.isPinned).toList();
 
-  pinned.sort((a, b) {
-    final aTime = a.updatedAt ?? a.createdAt;
-    final bTime = b.updatedAt ?? b.createdAt;
-    return bTime.compareTo(aTime);
-  });
+  // Sort based on mode
+  void sortByMode(List<StashItem> list) {
+    list.sort((a, b) {
+      final aTime = a.updatedAt ?? a.createdAt;
+      final bTime = b.updatedAt ?? b.createdAt;
 
-  unpinned.sort((a, b) {
-    final aTime = a.updatedAt ?? a.createdAt;
-    final bTime = b.updatedAt ?? b.createdAt;
-    return bTime.compareTo(aTime);
-  });
+      switch (sortMode) {
+        case SortMode.recent:
+          return bTime.compareTo(aTime); // Newest first
+        case SortMode.oldest:
+          return aTime.compareTo(bTime); // Oldest first
+      }
+    });
+  }
+
+  sortByMode(pinned);
+  sortByMode(unpinned);
+
   return [...pinned, ...unpinned];
 }
 
@@ -103,6 +111,7 @@ Stream<List<StashItem>> stashStream(Ref ref) {
   }
 
   final selectedTags = ref.watch(selectedTagsProvider);
+  final sortModeAsync = ref.watch(sortPreferenceProvider);
 
   return FirebaseFirestore.instance
       .collection('users')
@@ -122,7 +131,13 @@ Stream<List<StashItem>> stashStream(Ref ref) {
               )
               .toList();
         }
-        return _sortItems(items);
+
+        // Apply sort mode
+        final sortMode = sortModeAsync.maybeWhen(
+          data: (mode) => mode,
+          orElse: () => SortMode.recent,
+        );
+        return _sortItems(items, sortMode);
       });
 }
 
@@ -132,6 +147,8 @@ Stream<List<StashItem>> trashStream(Ref ref) {
   if (userId == null) {
     return Stream.value([]);
   }
+
+  final sortModeAsync = ref.watch(sortPreferenceProvider);
 
   return FirebaseFirestore.instance
       .collection('users')
@@ -144,11 +161,23 @@ Stream<List<StashItem>> trashStream(Ref ref) {
             .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
             .toList();
 
-        // Sort by deletion date (most recent first)
+        // Apply sort mode
+        final sortMode = sortModeAsync.maybeWhen(
+          data: (mode) => mode,
+          orElse: () => SortMode.recent,
+        );
+
+        // For trash, sort by deletion date
         items.sort((a, b) {
           final aTime = a.deletedAt ?? Timestamp.now();
           final bTime = b.deletedAt ?? Timestamp.now();
-          return bTime.compareTo(aTime);
+
+          switch (sortMode) {
+            case SortMode.recent:
+              return bTime.compareTo(aTime);
+            case SortMode.oldest:
+              return aTime.compareTo(bTime);
+          }
         });
         return items;
       });
@@ -169,6 +198,8 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
   if (userId == null || normalizedQuery.isEmpty) {
     return Stream.value([]);
   }
+
+  final sortModeAsync = ref.watch(sortPreferenceProvider);
 
   return FirebaseFirestore.instance
       .collection('users')
@@ -191,6 +222,12 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
               tags.any((tag) => tag.contains(normalizedQuery));
         }).toList();
 
-        return _sortItems(items);
+        // Apply sort mode
+        final sortMode = sortModeAsync.maybeWhen(
+          data: (mode) => mode,
+          orElse: () => SortMode.recent,
+        );
+
+        return _sortItems(items, sortMode);
       });
 }
