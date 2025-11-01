@@ -5,6 +5,7 @@ import 'package:stash/data/models/stash_item.dart';
 import 'package:stash/pages/stash_detail_page.dart';
 import 'package:stash/utils/date_formatter.dart';
 import 'package:stash/providers/ui_providers.dart';
+import 'package:stash/providers/timestamp_providers.dart';
 import 'package:stash/providers/selection_providers.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/utils/show_snackbar.dart';
@@ -45,13 +46,25 @@ class StashItemCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(clockStreamProvider);
+    final timestampFormat = ref
+        .watch(timestampPreferenceProvider)
+        .maybeWhen(
+          data: (format) => format,
+          orElse: () => DateFormatStyle.relative,
+        );
     final selectionState = ref.watch(selectionModeProvider);
     final isSelected = selectionState.isSelected(stashItem.id!);
     final isSelectionMode = selectionState.isActive;
 
     // Disable swipe actions in selection mode
     if (isSelectionMode) {
-      return _buildCard(context, ref, isSelected, isSelectionMode);
+      return _buildCard(
+        context,
+        ref,
+        timestampFormat,
+        isSelected,
+        isSelectionMode,
+      );
     }
 
     return Dismissible(
@@ -100,13 +113,20 @@ class StashItemCard extends ConsumerWidget {
           color: Theme.of(context).colorScheme.onErrorContainer,
         ),
       ),
-      child: _buildCard(context, ref, isSelected, isSelectionMode),
+      child: _buildCard(
+        context,
+        ref,
+        timestampFormat,
+        isSelected,
+        isSelectionMode,
+      ),
     );
   }
 
   Widget _buildCard(
     BuildContext context,
     WidgetRef ref,
+    DateFormatStyle timestampFormat,
     bool isSelected,
     bool isSelectionMode,
   ) {
@@ -167,7 +187,10 @@ class StashItemCard extends ConsumerWidget {
                   ),
                   subtitle: Row(
                     children: [
-                      Text('Type: ${stashItem.type}'),
+                      Text(
+                        'Type: ${stashItem.type}',
+                        style: TextStyle(color: Theme.of(context).hintColor),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '•',
@@ -175,9 +198,10 @@ class StashItemCard extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        formatItemTimestamp(
-                          stashItem.createdAt.toDate(),
-                          stashItem.updatedAt?.toDate(),
+                        formatTimestampByPreference(
+                          stashItem.updatedAt?.toDate() ??
+                              stashItem.createdAt.toDate(),
+                          timestampFormat,
                         ),
                         style: TextStyle(color: Theme.of(context).hintColor),
                       ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stash/data/repos/tag_repo.dart';
+import 'package:stash/utils/date_formatter.dart';
 import 'package:stash/providers/ui_providers.dart';
 import 'package:stash/providers/theme_providers.dart';
 import 'package:stash/providers/sort_providers.dart';
+import 'package:stash/providers/timestamp_providers.dart';
 
 class SettingsBottomSheet extends ConsumerWidget {
   const SettingsBottomSheet({super.key});
@@ -29,7 +31,7 @@ class SettingsBottomSheet extends ConsumerWidget {
           ),
           child: ListView(
             controller: scrollController,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
             children: [
               Center(
                 child: Container(
@@ -166,6 +168,84 @@ class SettingsBottomSheet extends ConsumerWidget {
                   ),
               const SizedBox(height: 32),
 
+              // Timestamp Format Section
+              const Text(
+                'Timestamp Format',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              ref
+                  .watch(timestampPreferenceProvider)
+                  .when(
+                    data: (timestampFormat) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Format Options
+                        DropdownButtonFormField<DateFormatStyle>(
+                          initialValue: timestampFormat,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+                          ),
+                          items: DateFormatStyle.values.map((style) {
+                            return DropdownMenuItem(
+                              value: style,
+                              child: Text(style.label),
+                            );
+                          }).toList(),
+                          onChanged: (DateFormatStyle? value) {
+                            if (value != null) {
+                              ref
+                                  .read(timestampPreferenceProvider.notifier)
+                                  .setTimestampFormat(value);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Show Preview of Timestamp Format
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.visibility_outlined,
+                                size: 20,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Preview: ${formatDate(DateTime.now().subtract(const Duration(hours: 2)), timestampFormat)}',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    loading: () => const CircularProgressIndicator(),
+                    error: (err, stackTrace) =>
+                        Text('Error loading timestamp format: $err'),
+                  ),
+              const SizedBox(height: 32),
+
               // Tag Filtering Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,21 +283,30 @@ class SettingsBottomSheet extends ConsumerWidget {
                       ),
                     );
                   }
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: tags.map((tag) {
-                      final isSelected = selectedTags.contains(tag.name);
-                      return FilterChip(
-                        label: Text(tag.name),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          ref
-                              .read(selectedTagsProvider.notifier)
-                              .toggleTag(tag.name);
-                        },
-                      );
-                    }).toList(),
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight:
+                          MediaQuery.of(context).size.height *
+                          0.25, // Max 25% of screen
+                    ),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: tags.map((tag) {
+                          final isSelected = selectedTags.contains(tag.name);
+                          return FilterChip(
+                            label: Text(tag.name),
+                            selected: isSelected,
+                            onSelected: (_) {
+                              ref
+                                  .read(selectedTagsProvider.notifier)
+                                  .toggleTag(tag.name);
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   );
                 },
                 loading: () => const Center(child: CircularProgressIndicator()),

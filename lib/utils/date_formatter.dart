@@ -61,10 +61,13 @@ String formatAbsoluteDate(DateTime dateTime) {
 
 // For settings later: different format options
 enum DateFormatStyle {
-  relative, // "2h ago"
-  absolute, // "Jan 15"
-  full, // "January 15, 2025"
-  datetime, // "Jan 15, 2:30 PM"
+  relative('Relative'), // "2h ago"
+  absolute('Absolute'), // "Jan 15"
+  full('Full Date'), // "January 15, 2025"
+  datetime('Date & Time'); // "Jan 15, 2:30 PM"
+
+  final String label;
+  const DateFormatStyle(this.label);
 }
 
 String formatDate(DateTime dateTime, DateFormatStyle style) {
@@ -87,4 +90,9 @@ String formatItemTimestamp(DateTime createdAt, DateTime? updatedAt) {
   } else {
     return formatRelativeTime(createdAt);
   }
+}
+
+// Format timestamp based on user preference
+String formatTimestampByPreference(DateTime dateTime, DateFormatStyle style) {
+  return formatDate(dateTime, style);
 }
