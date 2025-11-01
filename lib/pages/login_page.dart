@@ -136,20 +136,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //Logo
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/icons/stash_logo.png',
-                        height: 80,
-                        width: 80,
-                        errorBuilder: (context, error, stackTrace) => Icon(
+                  // Logo
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Image.asset(
+                      'assets/icons/stash_icon.png',
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, err, stackTrace) => Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Icon(
                           Icons.inventory_2_rounded,
                           size: 64,
                           color: Theme.of(context).colorScheme.primary,
