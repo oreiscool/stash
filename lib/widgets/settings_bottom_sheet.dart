@@ -228,7 +228,7 @@ class SettingsBottomSheet extends ConsumerWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Preview: ${formatDate(DateTime.now().subtract(const Duration(hours: 2)), timestampFormat)}',
+                                'Preview: ${formatDate(DateTime.now().subtract(const Duration(days: 7)), timestampFormat)}',
                                 style: TextStyle(
                                   color: Theme.of(
                                     context,
