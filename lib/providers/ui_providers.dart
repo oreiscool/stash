@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:stash/providers/selection_providers.dart';
 
 part 'ui_providers.g.dart';
 
@@ -11,6 +12,8 @@ class CurrentPage extends _$CurrentPage {
   }
 
   void setPage(String page) {
+    // Exit selection mode when changing pages
+    ref.read(selectionModeProvider.notifier).exitSelectionMode();
     state = page;
   }
 }
