@@ -231,6 +231,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Password TextField
                   TextField(
                     controller: _passwordController,
                     enabled: !_isLoading,

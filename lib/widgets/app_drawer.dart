@@ -21,9 +21,32 @@ class AppDrawer extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 alignment: Alignment.bottomLeft,
-                child: const Text(
-                  'Stash',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/icons/stash_icon.png',
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, err, stackTrace) => Icon(
+                          Icons.inventory_2_rounded,
+                          size: 32,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Stash',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
