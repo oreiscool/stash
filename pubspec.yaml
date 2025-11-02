@@ -34,7 +34,6 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/icons/stash_logo.png
     - assets/icons/stash_icon.png
     - assets/icons/stash_icon_foreground.png
     - assets/icons/stash_icon_monochrome.png
