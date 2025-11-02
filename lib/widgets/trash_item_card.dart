@@ -7,13 +7,40 @@ import 'package:stash/providers/selection_providers.dart';
 import 'package:stash/utils/show_snackbar.dart';
 import 'package:stash/utils/trash_utils.dart';
 
-class TrashItemCard extends ConsumerWidget {
+class TrashItemCard extends ConsumerStatefulWidget {
   const TrashItemCard({super.key, required this.stashItem});
   final StashItem stashItem;
 
+  @override
+  ConsumerState<TrashItemCard> createState() => _TrashItemCardState();
+}
+
+class _TrashItemCardState extends ConsumerState<TrashItemCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scaleController.dispose();
+    super.dispose();
+  }
+
   Future<void> _handleRestore(BuildContext context, WidgetRef ref) async {
     HapticFeedback.lightImpact();
-    await ref.read(stashRepoProvider).restoreFromTrash(stashItem.id!);
+    await ref.read(stashRepoProvider).restoreFromTrash(widget.stashItem.id!);
     if (!context.mounted) return;
     showSnackBar(context, 'Item restored from trash');
   }
@@ -44,18 +71,18 @@ class TrashItemCard extends ConsumerWidget {
 
     if (shouldDelete == true && context.mounted) {
       HapticFeedback.mediumImpact();
-      await ref.read(stashRepoProvider).permanentlyDelete(stashItem.id!);
+      await ref.read(stashRepoProvider).permanentlyDelete(widget.stashItem.id!);
       if (!context.mounted) return;
       showSnackBar(context, 'Item permanently deleted');
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final daysText = getDaysRemainingText(stashItem);
-    final isExpiring = isExpiringOn(stashItem);
+  Widget build(BuildContext context) {
+    final daysText = getDaysRemainingText(widget.stashItem);
+    final isExpiring = isExpiringOn(widget.stashItem);
     final selectionState = ref.watch(selectionModeProvider);
-    final isSelected = selectionState.isSelected(stashItem.id!);
+    final isSelected = selectionState.isSelected(widget.stashItem.id!);
     final isSelectionMode = selectionState.isActive;
 
     if (isSelectionMode) {
@@ -70,7 +97,7 @@ class TrashItemCard extends ConsumerWidget {
     }
 
     return Dismissible(
-      key: ValueKey(stashItem.id),
+      key: ValueKey(widget.stashItem.id),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
           // Swipe left - Permanently Delete
@@ -128,81 +155,102 @@ class TrashItemCard extends ConsumerWidget {
     String daysText,
     bool isExpiring,
   ) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(bottom: 8),
-      color: isSelected
-          ? Theme.of(
-              context,
-            ).colorScheme.primaryContainer.withValues(alpha: 0.3)
-          : null,
-      child: InkWell(
-        onTap: isSelectionMode
-            ? () {
-                HapticFeedback.selectionClick();
-                ref
-                    .read(selectionModeProvider.notifier)
-                    .toggleSelection(stashItem.id!);
-              }
-            : null,
-        onLongPress: !isSelectionMode
-            ? () {
-                HapticFeedback.heavyImpact();
-                ref
-                    .read(selectionModeProvider.notifier)
-                    .enterSelectionMode(stashItem.id!);
-              }
-            : null,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              leading: isSelectionMode
-                  ? Checkbox(
-                      value: isSelected,
-                      onChanged: (_) {
-                        HapticFeedback.selectionClick();
-                        ref
-                            .watch(selectionModeProvider.notifier)
-                            .toggleSelection(stashItem.id!);
-                      },
-                    )
-                  : null,
-              title: Text(
-                stashItem.content,
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: AnimatedScale(
+        scale: isSelectionMode && isSelected ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.antiAlias,
+          margin: const EdgeInsets.only(bottom: 8),
+          color: isSelected
+              ? Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+              : null,
+          child: InkWell(
+            onTapDown: (_) => _scaleController.forward(),
+            onTapUp: (_) => _scaleController.reverse(),
+            onTapCancel: () => _scaleController.reverse(),
+            onTap: isSelectionMode
+                ? () {
+                    HapticFeedback.selectionClick();
+                    ref
+                        .read(selectionModeProvider.notifier)
+                        .toggleSelection(widget.stashItem.id!);
+                  }
+                : null,
+            onLongPress: !isSelectionMode
+                ? () {
+                    HapticFeedback.heavyImpact();
+                    ref
+                        .read(selectionModeProvider.notifier)
+                        .enterSelectionMode(widget.stashItem.id!);
+                  }
+                : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: isSelectionMode
+                      ? AnimatedOpacity(
+                          duration: const Duration(milliseconds: 300),
+                          opacity: isSelectionMode ? 1 : 0,
+                          child: Checkbox(
+                            value: isSelected,
+                            onChanged: (_) {
+                              HapticFeedback.selectionClick();
+                              ref
+                                  .read(selectionModeProvider.notifier)
+                                  .toggleSelection(widget.stashItem.id!);
+                            },
+                          ),
+                        )
+                      : null,
+                  title: Text(
+                    widget.stashItem.content,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Type: ${stashItem.type}'),
-                      const SizedBox(width: 8),
-                      Text(
-                        '•',
-                        style: TextStyle(color: Theme.of(context).dividerColor),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        daysText,
-                        style: TextStyle(
-                          color: isExpiring
-                              ? Theme.of(context).colorScheme.error
-                              : Theme.of(context).textTheme.bodyMedium?.color,
-                          fontWeight: isExpiring
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
+                      Row(
+                        children: [
+                          Text('Type: ${widget.stashItem.type}'),
+                          const SizedBox(width: 8),
+                          Text(
+                            '•',
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            daysText,
+                            style: TextStyle(
+                              color: isExpiring
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.color,
+                              fontWeight: isExpiring
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

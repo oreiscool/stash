@@ -55,81 +55,92 @@ class TagManagementPage extends ConsumerWidget {
                   final tag = tags[index];
                   final isSelected = selectionState.isSelected(tag.id);
 
-                  return ListTile(
-                    leading: selectionState.isActive
-                        ? Checkbox(
-                            value: isSelected,
-                            onChanged: (_) {
-                              ref
-                                  .read(selectionModeProvider.notifier)
-                                  .toggleSelection(tag.id);
-                            },
-                          )
-                        : Icon(isSelected ? Icons.label : Icons.label_outlined),
-                    title: Text(tag.name),
-                    selected: isSelected,
-                    selectedTileColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    onTap: () {
-                      if (selectionState.isActive) {
-                        ref
-                            .read(selectionModeProvider.notifier)
-                            .toggleSelection(tag.id);
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AddTagDialog(tagToEdit: tag),
-                        );
-                      }
-                    },
-                    onLongPress: () {
-                      if (!selectionState.isActive) {
-                        ref
-                            .read(selectionModeProvider.notifier)
-                            .enterSelectionMode(tag.id);
-                      }
-                    },
-                    trailing: selectionState.isActive
-                        ? null
-                        : IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            tooltip: 'Delete tag',
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext dialogContext) {
-                                  return AlertDialog(
-                                    title: const Text('Confirm Deletion'),
-                                    content: Text(
-                                      'Are you sure you want to delete the tag "${tag.name}"?',
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          ref
-                                              .read(tagRepoProvider)
-                                              .deleteTag(tag.id);
-                                          Navigator.of(dialogContext).pop();
-                                          showSnackBar(
-                                            context,
-                                            'Tag "${tag.name}" deleted',
-                                          );
-                                        },
-                                        child: const Text('Delete'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(dialogContext).pop();
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                    ],
-                                  );
+                  return AnimatedScale(
+                    scale: isSelected ? 0.98 : 1.0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: ListTile(
+                      leading: selectionState.isActive
+                          ? AnimatedOpacity(
+                              opacity: 1.0,
+                              duration: const Duration(milliseconds: 300),
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (_) {
+                                  ref
+                                      .read(selectionModeProvider.notifier)
+                                      .toggleSelection(tag.id);
                                 },
-                              );
-                            },
-                          ),
+                              ),
+                            )
+                          : Icon(
+                              isSelected ? Icons.label : Icons.label_outlined,
+                            ),
+                      title: Text(tag.name),
+                      selected: isSelected,
+                      selectedTileColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      onTap: () {
+                        if (selectionState.isActive) {
+                          ref
+                              .read(selectionModeProvider.notifier)
+                              .toggleSelection(tag.id);
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AddTagDialog(tagToEdit: tag),
+                          );
+                        }
+                      },
+                      onLongPress: () {
+                        if (!selectionState.isActive) {
+                          ref
+                              .read(selectionModeProvider.notifier)
+                              .enterSelectionMode(tag.id);
+                        }
+                      },
+                      trailing: selectionState.isActive
+                          ? null
+                          : IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              tooltip: 'Delete tag',
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext dialogContext) {
+                                    return AlertDialog(
+                                      title: const Text('Confirm Deletion'),
+                                      content: Text(
+                                        'Are you sure you want to delete the tag "${tag.name}"?',
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            ref
+                                                .read(tagRepoProvider)
+                                                .deleteTag(tag.id);
+                                            Navigator.of(dialogContext).pop();
+                                            showSnackBar(
+                                              context,
+                                              'Tag "${tag.name}" deleted',
+                                            );
+                                          },
+                                          child: const Text('Delete'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(dialogContext).pop();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                    ),
                   );
                 },
               );

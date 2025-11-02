@@ -11,7 +11,7 @@ import 'package:stash/providers/selection_providers.dart';
 import 'package:stash/data/repos/stash_repo.dart';
 import 'package:stash/utils/show_snackbar.dart';
 
-class SearchResultCard extends ConsumerWidget {
+class SearchResultCard extends ConsumerStatefulWidget {
   const SearchResultCard({
     super.key,
     required this.stashItem,
@@ -20,6 +20,33 @@ class SearchResultCard extends ConsumerWidget {
 
   final StashItem stashItem;
   final String query;
+
+  @override
+  ConsumerState<SearchResultCard> createState() => _SearchResultCardState();
+}
+
+class _SearchResultCardState extends ConsumerState<SearchResultCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _scaleController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleDelete(BuildContext context, WidgetRef ref) async {
     final shouldDelete = await showDialog<bool>(
@@ -44,14 +71,14 @@ class SearchResultCard extends ConsumerWidget {
 
     if (shouldDelete == true && context.mounted) {
       HapticFeedback.mediumImpact();
-      await ref.read(stashRepoProvider).moveToTrash(stashItem.id!);
+      await ref.read(stashRepoProvider).moveToTrash(widget.stashItem.id!);
       if (!context.mounted) return;
       showSnackBar(context, 'Item moved to trash');
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     ref.watch(clockStreamProvider);
     final timestampFormat = ref
         .watch(timestampPreferenceProvider)
@@ -60,7 +87,7 @@ class SearchResultCard extends ConsumerWidget {
           orElse: () => DateFormatStyle.relative,
         );
     final selectionState = ref.watch(selectionModeProvider);
-    final isSelected = selectionState.isSelected(stashItem.id!);
+    final isSelected = selectionState.isSelected(widget.stashItem.id!);
     final isSelectionMode = selectionState.isActive;
 
     // Disable swipe actions in selection mode
@@ -75,7 +102,7 @@ class SearchResultCard extends ConsumerWidget {
     }
 
     return Dismissible(
-      key: ValueKey(stashItem.id),
+      key: ValueKey(widget.stashItem.id),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
           // Swipe left - Delete
@@ -84,11 +111,11 @@ class SearchResultCard extends ConsumerWidget {
         } else if (direction == DismissDirection.startToEnd) {
           // Swipe right - Pin/Unpin
           HapticFeedback.lightImpact();
-          await ref.read(stashRepoProvider).togglePin(stashItem);
+          await ref.read(stashRepoProvider).togglePin(widget.stashItem);
           if (!context.mounted) return false;
           showSnackBar(
             context,
-            stashItem.isPinned ? 'Unpinned' : 'Pinned to top',
+            widget.stashItem.isPinned ? 'Unpinned' : 'Pinned to top',
           );
           return false;
         }
@@ -103,7 +130,7 @@ class SearchResultCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
-          stashItem.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+          widget.stashItem.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
           color: Theme.of(context).colorScheme.onPrimaryContainer,
         ),
       ),
@@ -137,125 +164,152 @@ class SearchResultCard extends ConsumerWidget {
     bool isSelected,
     bool isSelectionMode,
   ) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(bottom: 8),
-      color: isSelected
-          ? Theme.of(
-              context,
-            ).colorScheme.primaryContainer.withValues(alpha: 0.3)
-          : null,
-      child: InkWell(
-        onTap: () {
-          if (isSelectionMode) {
-            HapticFeedback.selectionClick();
-            ref
-                .read(selectionModeProvider.notifier)
-                .toggleSelection(stashItem.id!);
-          } else {
-            HapticFeedback.lightImpact();
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => StashDetailPage(stashItem: stashItem),
-              ),
-            );
-          }
-        },
-        onLongPress: () {
-          if (!isSelectionMode) {
-            HapticFeedback.heavyImpact();
-            ref
-                .read(selectionModeProvider.notifier)
-                .enterSelectionMode(stashItem.id!);
-          }
-        },
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: AnimatedScale(
+        scale: isSelectionMode && isSelected ? 0.98 : 1.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.antiAlias,
+          margin: const EdgeInsets.only(bottom: 8),
+          color: isSelected
+              ? Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+              : null,
+          child: InkWell(
+            onTapDown: (_) => _scaleController.forward(),
+            onTapUp: (_) => _scaleController.reverse(),
+            onTapCancel: () => _scaleController.reverse(),
+            onTap: () {
+              if (isSelectionMode) {
+                HapticFeedback.selectionClick();
+                ref
+                    .read(selectionModeProvider.notifier)
+                    .toggleSelection(widget.stashItem.id!);
+              } else {
+                HapticFeedback.lightImpact();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        StashDetailPage(stashItem: widget.stashItem),
+                  ),
+                );
+              }
+            },
+            onLongPress: () {
+              if (!isSelectionMode) {
+                HapticFeedback.heavyImpact();
+                ref
+                    .read(selectionModeProvider.notifier)
+                    .enterSelectionMode(widget.stashItem.id!);
+              }
+            },
+            child: Stack(
               children: [
-                ListTile(
-                  leading: isSelectionMode
-                      ? Checkbox(
-                          value: isSelected,
-                          onChanged: (_) {
-                            HapticFeedback.selectionClick();
-                            ref
-                                .read(selectionModeProvider.notifier)
-                                .toggleSelection(stashItem.id!);
-                          },
-                        )
-                      : null,
-                  title: HighlightedText(
-                    text: stashItem.content,
-                    query: query,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Row(
-                    children: [
-                      HighlightedText(
-                        text: 'Type: ${stashItem.type}',
-                        query: query,
-                        style: TextStyle(color: Theme.of(context).hintColor),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      leading: isSelectionMode
+                          ? AnimatedOpacity(
+                              duration: const Duration(milliseconds: 300),
+                              opacity: isSelectionMode ? 1 : 0,
+                              child: Checkbox(
+                                value: isSelected,
+                                onChanged: (_) {
+                                  HapticFeedback.selectionClick();
+                                  ref
+                                      .read(selectionModeProvider.notifier)
+                                      .toggleSelection(widget.stashItem.id!);
+                                },
+                              ),
+                            )
+                          : null,
+                      title: HighlightedText(
+                        text: widget.stashItem.content,
+                        query: widget.query,
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '•',
-                        style: TextStyle(color: Theme.of(context).dividerColor),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        formatTimestampByPreference(
-                          stashItem.updatedAt?.toDate() ??
-                              stashItem.createdAt.toDate(),
-                          timestampFormat,
-                        ),
-                        style: TextStyle(color: Theme.of(context).hintColor),
-                      ),
-                    ],
-                  ),
-                ),
-                if (stashItem.tags.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                    child: Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: stashItem.tags.map((tag) {
-                        final isMatchingTag = tag.toLowerCase().contains(
-                          query.toLowerCase().trim(),
-                        );
-                        return Chip(
-                          label: isMatchingTag
-                              ? HighlightedText(
-                                  text: tag,
-                                  query: query,
-                                  style: const TextStyle(fontSize: 12),
-                                )
-                              : Text(tag, style: const TextStyle(fontSize: 12)),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
+                      subtitle: Row(
+                        children: [
+                          HighlightedText(
+                            text: 'Type: ${widget.stashItem.type}',
+                            query: widget.query,
+                            style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
-                        );
-                      }).toList(),
+                          const SizedBox(width: 8),
+                          Text(
+                            '•',
+                            style: TextStyle(
+                              color: Theme.of(context).dividerColor,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            formatTimestampByPreference(
+                              widget.stashItem.updatedAt?.toDate() ??
+                                  widget.stashItem.createdAt.toDate(),
+                              timestampFormat,
+                            ),
+                            style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (widget.stashItem.tags.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                        child: Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: widget.stashItem.tags.map((tag) {
+                            final isMatchingTag = tag.toLowerCase().contains(
+                              widget.query.toLowerCase().trim(),
+                            );
+                            return Chip(
+                              label: isMatchingTag
+                                  ? HighlightedText(
+                                      text: tag,
+                                      query: widget.query,
+                                      style: const TextStyle(fontSize: 12),
+                                    )
+                                  : Text(
+                                      tag,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                  ],
+                ),
+                if (widget.stashItem.isPinned && !isSelectionMode)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Icon(
+                      Icons.push_pin,
+                      size: 16,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
               ],
             ),
-            if (stashItem.isPinned && !isSelectionMode)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Icon(
-                  Icons.push_pin,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
