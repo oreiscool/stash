@@ -72,6 +72,9 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     ref.watch(clockStreamProvider);
     final timestampFormat = ref
         .watch(timestampPreferenceProvider)
@@ -91,6 +94,7 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
         timestampFormat,
         isSelected,
         isSelectionMode,
+        theme,
       );
     }
 
@@ -119,12 +123,12 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
         padding: const EdgeInsets.only(left: 20),
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
           widget.stashItem.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: colorScheme.onPrimaryContainer,
         ),
       ),
       secondaryBackground: Container(
@@ -132,13 +136,10 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.errorContainer,
+          color: colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(
-          Icons.delete_outline,
-          color: Theme.of(context).colorScheme.onErrorContainer,
-        ),
+        child: Icon(Icons.delete_outline, color: colorScheme.onErrorContainer),
       ),
       child: _buildCard(
         context,
@@ -146,6 +147,7 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
         timestampFormat,
         isSelected,
         isSelectionMode,
+        theme,
       ),
     );
   }
@@ -156,7 +158,9 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
     DateFormatStyle timestampFormat,
     bool isSelected,
     bool isSelectionMode,
+    ThemeData theme,
   ) {
+    final colorScheme = theme.colorScheme;
     return ScaleTransition(
       scale: _scaleAnimation,
       child: AnimatedScale(
@@ -170,9 +174,7 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
           clipBehavior: Clip.antiAlias,
           margin: const EdgeInsets.only(bottom: 8),
           color: isSelected
-              ? Theme.of(
-                  context,
-                ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+              ? colorScheme.primaryContainer.withValues(alpha: 0.3)
               : null,
           child: InkWell(
             onTapDown: (_) => _scaleController.forward(),
@@ -190,8 +192,10 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         StashDetailPage(stashItem: widget.stashItem),
-                    transitionDuration: Duration(milliseconds: 300),
-                    reverseTransitionDuration: Duration(milliseconds: 300),
+                    transitionDuration: const Duration(milliseconds: 300),
+                    reverseTransitionDuration: const Duration(
+                      milliseconds: 300,
+                    ),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                           // Scale animation (grows from 0.8 to 1.0)
@@ -314,7 +318,7 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
                     child: Icon(
                       Icons.push_pin,
                       size: 16,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
               ],

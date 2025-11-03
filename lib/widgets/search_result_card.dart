@@ -197,8 +197,10 @@ class _SearchResultCardState extends ConsumerState<SearchResultCard>
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
                         StashDetailPage(stashItem: widget.stashItem),
-                    transitionDuration: Duration(milliseconds: 300),
-                    reverseTransitionDuration: Duration(milliseconds: 300),
+                    transitionDuration: const Duration(milliseconds: 300),
+                    reverseTransitionDuration: const Duration(
+                      milliseconds: 300,
+                    ),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                           // Scale animation (grows from 0.8 to 1.0)

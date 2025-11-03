@@ -144,7 +144,10 @@ class TrashPage extends ConsumerWidget {
                       itemCount: items.length,
                       itemBuilder: (context, index) {
                         final item = items[index];
-                        return TrashItemCard(stashItem: item);
+                        return TrashItemCard(
+                          key: ValueKey(item.id),
+                          stashItem: item,
+                        );
                       },
                     ),
                   ),

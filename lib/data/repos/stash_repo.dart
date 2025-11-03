@@ -120,23 +120,22 @@ Stream<List<StashItem>> stashStream(Ref ref) {
       .orderBy('updatedAt', descending: true)
       .snapshots()
       .map((snapshot) {
-        var items = snapshot.docs
-            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
-            .toList();
-        items = items.where((item) => !item.isDeleted).toList();
-        if (selectedTags.isNotEmpty) {
-          items = items
-              .where(
-                (item) => item.tags.any((tag) => selectedTags.contains(tag)),
-              )
-              .toList();
-        }
-
-        // Apply sort mode
         final sortMode = sortModeAsync.maybeWhen(
           data: (mode) => mode,
           orElse: () => SortMode.recent,
         );
+
+        final selectedTagsSet = selectedTags.toSet();
+        final items = snapshot.docs
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
+            .where((item) => !item.isDeleted)
+            .where(
+              (item) =>
+                  selectedTags.isEmpty ||
+                  item.tags.any((tag) => selectedTagsSet.contains(tag)),
+            )
+            .toList();
+
         return _sortItems(items, sortMode);
       });
 }
@@ -157,29 +156,16 @@ Stream<List<StashItem>> trashStream(Ref ref) {
       .where('isDeleted', isEqualTo: true)
       .snapshots()
       .map((snapshot) {
-        var items = snapshot.docs
-            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
-            .toList();
-
-        // Apply sort mode
         final sortMode = sortModeAsync.maybeWhen(
           data: (mode) => mode,
           orElse: () => SortMode.recent,
         );
 
-        // For trash, sort by deletion date
-        items.sort((a, b) {
-          final aTime = a.deletedAt ?? Timestamp.now();
-          final bTime = b.deletedAt ?? Timestamp.now();
+        final items = snapshot.docs
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
+            .toList();
 
-          switch (sortMode) {
-            case SortMode.recent:
-              return bTime.compareTo(aTime);
-            case SortMode.oldest:
-              return aTime.compareTo(bTime);
-          }
-        });
-        return items;
+        return _sortItems(items, sortMode);
       });
 }
 
@@ -208,25 +194,24 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
       .orderBy('createdAt', descending: true)
       .snapshots()
       .map((snapshot) {
-        var items = snapshot.docs
-            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
-            .toList();
-        items = items.where((item) => !item.isDeleted).toList();
-        items = items.where((item) {
-          final content = item.content.toLowerCase();
-          final type = item.type.toLowerCase();
-          final tags = item.tags.map((tag) => tag.toLowerCase()).toList();
-
-          return content.contains(normalizedQuery) ||
-              type.contains(normalizedQuery) ||
-              tags.any((tag) => tag.contains(normalizedQuery));
-        }).toList();
-
-        // Apply sort mode
         final sortMode = sortModeAsync.maybeWhen(
           data: (mode) => mode,
           orElse: () => SortMode.recent,
         );
+
+        final items = snapshot.docs
+            .map((doc) => StashItem.fromFirestore(doc.data(), doc.id))
+            .where((item) => !item.isDeleted)
+            .where((item) {
+              final contentMatch = item.content.toLowerCase().contains(
+                normalizedQuery,
+              );
+              final tagsMatch = item.tags.any(
+                (tag) => tag.toLowerCase().contains(normalizedQuery),
+              );
+              return contentMatch || tagsMatch;
+            })
+            .toList();
 
         return _sortItems(items, sortMode);
       });

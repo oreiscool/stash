@@ -52,7 +52,7 @@ class HomePage extends ConsumerWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return StashItemCard(stashItem: item);
+                  return StashItemCard(key: ValueKey(item.id), stashItem: item);
                 },
               );
             },

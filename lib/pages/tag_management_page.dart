@@ -60,6 +60,7 @@ class TagManagementPage extends ConsumerWidget {
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                     child: ListTile(
+                      key: ValueKey(tag.id),
                       leading: selectionState.isActive
                           ? AnimatedOpacity(
                               opacity: 1.0,

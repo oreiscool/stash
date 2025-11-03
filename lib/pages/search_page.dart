@@ -78,7 +78,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
-                    return SearchResultCard(stashItem: item, query: _query);
+                    return SearchResultCard(
+                      key: ValueKey(item.id),
+                      stashItem: item,
+                      query: _query,
+                    );
                   },
                 );
               },
