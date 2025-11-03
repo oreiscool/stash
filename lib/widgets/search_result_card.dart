@@ -194,9 +194,39 @@ class _SearchResultCardState extends ConsumerState<SearchResultCard>
               } else {
                 HapticFeedback.lightImpact();
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
                         StashDetailPage(stashItem: widget.stashItem),
+                    transitionDuration: Duration(milliseconds: 300),
+                    reverseTransitionDuration: Duration(milliseconds: 300),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          // Scale animation (grows from 0.8 to 1.0)
+                          final scaleAnimation =
+                              Tween<double>(begin: 0.8, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOut,
+                                ),
+                              );
+
+                          // Fade animation
+                          final fadeAnimation =
+                              Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOut,
+                                ),
+                              );
+
+                          return FadeTransition(
+                            opacity: fadeAnimation,
+                            child: ScaleTransition(
+                              scale: scaleAnimation,
+                              child: child,
+                            ),
+                          );
+                        },
                   ),
                 );
               }
