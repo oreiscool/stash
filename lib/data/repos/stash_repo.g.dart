@@ -46,7 +46,7 @@ final class StashStreamProvider
   }
 }
 
-String _$stashStreamHash() => r'4e6770051e3e8ceadb2c3a0e95de35d693ab26c9';
+String _$stashStreamHash() => r'1819439376a92313f4181c203835c42375b10031';
 
 @ProviderFor(trashStream)
 const trashStreamProvider = TrashStreamProvider._();
@@ -85,7 +85,7 @@ final class TrashStreamProvider
   }
 }
 
-String _$trashStreamHash() => r'8b5766c7d9884972450f3f328e4fee23609000bd';
+String _$trashStreamHash() => r'a2e4a74feed1d9896c16c9d959ea6da35ad908dd';
 
 @ProviderFor(stashService)
 const stashServiceProvider = StashServiceProvider._();
@@ -224,7 +224,7 @@ final class StashSearchProvider
   }
 }
 
-String _$stashSearchHash() => r'69aad3f46f552975ca99c45e5f10120ffe2cd795';
+String _$stashSearchHash() => r'bf3ed85f63208f21ea7cc8386eb1345c25474e55';
 
 final class StashSearchFamily extends $Family
     with $FunctionalFamilyOverride<Stream<List<StashItem>>, String> {

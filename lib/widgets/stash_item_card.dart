@@ -75,13 +75,18 @@ class _StashItemCardState extends ConsumerState<StashItemCard>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    ref.watch(clockStreamProvider);
     final timestampFormat = ref
         .watch(timestampPreferenceProvider)
         .maybeWhen(
           data: (format) => format,
           orElse: () => DateFormatStyle.relative,
         );
+
+    // Only watch clock stream if using relative time format
+    if (timestampFormat == DateFormatStyle.relative) {
+      ref.watch(clockStreamProvider);
+    }
+
     final selectionState = ref.watch(selectionModeProvider);
     final isSelected = selectionState.isSelected(widget.stashItem.id!);
     final isSelectionMode = selectionState.isActive;
