@@ -125,6 +125,7 @@ class TagManagementPage extends ConsumerWidget {
                                             showSnackBar(
                                               context,
                                               'Tag "${tag.name}" deleted',
+                                              null,
                                             );
                                           },
                                           child: const Text('Delete'),

@@ -46,7 +46,7 @@ class TagSelectionActionBar extends ConsumerWidget {
       if (!context.mounted) return;
       // Exit selection mode immediately for better UX
       ref.read(selectionModeProvider.notifier).exitSelectionMode();
-      showSnackBar(context, '${selectedIds.length} tag(s) deleted');
+      showSnackBar(context, '${selectedIds.length} tag(s) deleted', null);
 
       // Delete all tags in parallel to avoid errors when exiting selection mode while widget is mounted
       await Future.wait(selectedIds.map((id) => repo.deleteTag(id)));

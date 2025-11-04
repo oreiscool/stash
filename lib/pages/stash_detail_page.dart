@@ -84,6 +84,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
               showSnackBar(
                 context,
                 _currentItem.isPinned ? 'Pinned to top' : 'Unpinned',
+                null,
               );
             },
             icon: Icon(
@@ -98,7 +99,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                 ClipboardData(text: _currentItem.content),
               );
               if (!context.mounted) return;
-              showSnackBar(context, '${_currentItem.type} copied!');
+              showSnackBar(context, '${_currentItem.type} copied!', null);
             },
             icon: const Icon(Icons.copy_outlined),
             tooltip: 'Copy to clipboard',
@@ -112,7 +113,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                   setState(() {
                     _isEditing = false;
                   });
-                  showSnackBar(context, 'No changes made');
+                  showSnackBar(context, 'No changes made', null);
                   return;
                 }
 
@@ -127,7 +128,7 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                 setState(() {
                   _currentItem = updatedItem;
                 });
-                showSnackBar(context, 'Item updated');
+                showSnackBar(context, 'Item updated', null);
               }
               setState(() {
                 _isEditing = !_isEditing;
@@ -159,7 +160,18 @@ class _StashDetailPageState extends ConsumerState<StashDetailPage> {
                             .moveToTrash(widget.stashItem.id!);
                         if (!context.mounted) return;
                         Navigator.of(context).pop();
-                        showSnackBar(context, 'Moved to trash');
+                        showSnackBar(
+                          context,
+                          'Moved to trash',
+                          SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () async {
+                              await ref
+                                  .read(stashRepoProvider)
+                                  .restoreFromTrash(widget.stashItem.id!);
+                            },
+                          ),
+                        );
                       },
                     ),
                     TextButton(

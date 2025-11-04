@@ -22,7 +22,7 @@ class TrashSelectionActionBar extends ConsumerWidget {
     if (!context.mounted) return;
     // Exit selection mode immediately for better UX
     ref.read(selectionModeProvider.notifier).exitSelectionMode();
-    showSnackBar(context, '${selectedIds.length} item(s) restored');
+    showSnackBar(context, '${selectedIds.length} item(s) restored', null);
 
     // Restore all items in parallel to avoid errors when exiting selection mode while widget is mounted
     Future.wait(selectedIds.map((id) => repo.restoreFromTrash(id)));
@@ -63,6 +63,7 @@ class TrashSelectionActionBar extends ConsumerWidget {
       showSnackBar(
         context,
         '${selectedIds.length} item(s) permanently deleted',
+        null,
       );
 
       // Delete all items in parallel to avoid errors when exiting selection mode while widget is mounted

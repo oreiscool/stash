@@ -73,7 +73,18 @@ class _SearchResultCardState extends ConsumerState<SearchResultCard>
       HapticFeedback.mediumImpact();
       await ref.read(stashRepoProvider).moveToTrash(widget.stashItem.id!);
       if (!context.mounted) return;
-      showSnackBar(context, 'Item moved to trash');
+      showSnackBar(
+        context,
+        'Item moved to trash',
+        SnackBarAction(
+          label: 'Undo',
+          onPressed: () async {
+            await ref
+                .read(stashRepoProvider)
+                .restoreFromTrash(widget.stashItem.id!);
+          },
+        ),
+      );
     }
   }
 
@@ -121,6 +132,7 @@ class _SearchResultCardState extends ConsumerState<SearchResultCard>
           showSnackBar(
             context,
             widget.stashItem.isPinned ? 'Unpinned' : 'Pinned to top',
+            null,
           );
           return false;
         }

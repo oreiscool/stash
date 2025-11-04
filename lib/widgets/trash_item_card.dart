@@ -42,7 +42,7 @@ class _TrashItemCardState extends ConsumerState<TrashItemCard>
     HapticFeedback.lightImpact();
     await ref.read(stashRepoProvider).restoreFromTrash(widget.stashItem.id!);
     if (!context.mounted) return;
-    showSnackBar(context, 'Item restored from trash');
+    showSnackBar(context, 'Item restored from trash', null);
   }
 
   Future<void> _handlePermanentDelete(
@@ -73,7 +73,7 @@ class _TrashItemCardState extends ConsumerState<TrashItemCard>
       HapticFeedback.mediumImpact();
       await ref.read(stashRepoProvider).permanentlyDelete(widget.stashItem.id!);
       if (!context.mounted) return;
-      showSnackBar(context, 'Item permanently deleted');
+      showSnackBar(context, 'Item permanently deleted', null);
     }
   }
 

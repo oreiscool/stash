@@ -51,7 +51,19 @@ class SelectionActionBar extends ConsumerWidget {
       if (!context.mounted) return;
       // Exit selection mode immediately for better UX
       ref.read(selectionModeProvider.notifier).exitSelectionMode();
-      showSnackBar(context, '${selectedIds.length} item(s) moved to trash');
+      showSnackBar(
+        context,
+        '${selectedIds.length} item(s) moved to trash',
+        SnackBarAction(
+          label: 'Undo',
+          onPressed: () async {
+            // Restore all items in parallel to avoid errors when exiting selection mode while widget is mounted
+            await Future.wait(
+              selectedIds.map((id) => repo.restoreFromTrash(id)),
+            );
+          },
+        ),
+      );
 
       // Delete all items in parallel to avoid errors when exiting selection mode while widget is mounted
       Future.wait(selectedIds.map((id) => repo.moveToTrash(id)));
@@ -84,6 +96,7 @@ class SelectionActionBar extends ConsumerWidget {
       shouldPin
           ? '${selectedIds.length} item(s) pinned'
           : '${selectedIds.length} item(s) unpinned',
+      null,
     );
 
     // Pin/unpin all items in parallel for errors that also occur with the deletion
@@ -122,7 +135,11 @@ class SelectionActionBar extends ConsumerWidget {
 
       ref.read(selectionModeProvider.notifier).exitSelectionMode();
       if (!context.mounted) return;
-      showSnackBar(context, 'Tags added to ${selectedIds.length} item(s)');
+      showSnackBar(
+        context,
+        'Tags added to ${selectedIds.length} item(s)',
+        null,
+      );
     }
   }
 

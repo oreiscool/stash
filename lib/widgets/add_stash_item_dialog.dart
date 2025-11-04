@@ -216,7 +216,7 @@ class _AddStashItemDialogState extends ConsumerState<AddStashItemDialog> {
                 );
 
             Navigator.of(context).pop();
-            showSnackBar(context, 'Item stashed!');
+            showSnackBar(context, 'Item stashed!', null);
           },
           child: const Text('Stash It'),
         ),

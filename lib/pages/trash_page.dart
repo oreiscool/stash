@@ -71,6 +71,7 @@ class TrashPage extends ConsumerWidget {
                                 showSnackBar(
                                   context,
                                   'Expired items cleaned up',
+                                  null,
                                 );
                               },
                               icon: const Icon(
@@ -110,6 +111,7 @@ class TrashPage extends ConsumerWidget {
                                           showSnackBar(
                                             context,
                                             'Trash has been emptied',
+                                            null,
                                           );
                                         },
                                         child: const Text('Empty Trash'),
