@@ -32,7 +32,7 @@ A frictionless personal knowledge manager built with Flutter. Quickly capture an
 
 ## Tech Stack
 
-- **Framework**: Flutter 3.9.0
+- **Framework**: Flutter 3.35.7
 - **State Management**: Riverpod with code generation
 - **Backend**: Firebase (Auth + Firestore)
 - **Authentication**: Email/Password + Google Sign-In
