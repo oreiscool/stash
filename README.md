@@ -13,7 +13,7 @@ A frictionless personal knowledge manager built with Flutter. Quickly capture an
 - **Smart Auto-Categorization**: Automatically detects and categorizes content as Links, Snippets, or Notes
 - **Tag-Based Organization**: Create and assign tags for easy filtering and discovery
 - **Pin Important Items**: Keep frequently accessed items at the top
-- **Full-Text Search**: Search across all content and tags with highlighted results
+- **Full-Text Search**: Search across all content, types and tags with highlighted results
 - **Trash with Recovery**: 7-day recovery window for deleted items with auto-cleanup
 - **Selection Mode**: Bulk operations for efficient management
 - **Material You Theming**: Dynamic color schemes that adapt to your device
@@ -51,7 +51,7 @@ A frictionless personal knowledge manager built with Flutter. Quickly capture an
 
 1. **Clone the repository**
 ```bash
-	git clone https://github.com/yourusername/stash.git
+	git clone https://github.com/oreiscool/stash.git
 	cd stash
 ```
 
