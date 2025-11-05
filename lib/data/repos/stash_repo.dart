@@ -209,7 +209,10 @@ Stream<List<StashItem>> stashSearch(Ref ref, String query) {
               final tagsMatch = item.tags.any(
                 (tag) => tag.toLowerCase().contains(normalizedQuery),
               );
-              return contentMatch || tagsMatch;
+              final typeMatch = item.type.toLowerCase().contains(
+                normalizedQuery,
+              );
+              return contentMatch || tagsMatch || typeMatch;
             })
             .toList();
 
