@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "144787903889-vomucoehhcpvc8ocp1ishg247f8q456b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.stevie.stash",
+            "certificate_hash": "735f9965742559648afa727881bb14374b6d3695"
+          }
+        },
+        {
           "client_id": "144787903889-dsrije14pnhgrtep5ibnua7hr268plq2.apps.googleusercontent.com",
           "client_type": 3
         }
