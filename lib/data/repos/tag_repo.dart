@@ -48,6 +48,37 @@ class TagRepo {
       throw Exception('User not authenticated.');
     }
 
+    // Get the tag name first to remove it from all items
+    final tagDoc = await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('tags')
+        .doc(tagId)
+        .get();
+
+    final tagName = (tagDoc.data()?['name'] as String?) ?? '';
+
+    // Remove the tag from all stash items that reference it
+    if (tagName.isNotEmpty) {
+      final itemsSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('stash_items')
+          .where('tags', arrayContains: tagName)
+          .get();
+
+      // Update all items to remove this tag
+      for (final itemDoc in itemsSnapshot.docs) {
+        final currentTags = List<String>.from(
+          itemDoc.data()['tags'] as List? ?? [],
+        );
+        currentTags.remove(tagName);
+
+        await itemDoc.reference.update({'tags': currentTags});
+      }
+    }
+
+    // Delete the tag
     await _firestore
         .collection('users')
         .doc(userId)
